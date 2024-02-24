@@ -1,0 +1,115 @@
+#! armcc -E
+;#! armclang -E --target=arm-arm-none-eabi -mcpu=cortex-m7 -xc
+/* ʹ��˵�� 
+! armclang -E --target=arm-arm-none-eabi -mcpu=cortex-m7 -xc�� ����AC6���뱨����L6709E����ʱ����ʹ�ô�����
+��armcc -E�� ����AC5���뱨����L6709E����ʱ����ʹ�ô�����
+ע�⣬���ñ���ű��ļ���һ�У������Ǳ�������ע�����˳��
+*/
+
+/**
+ ****************************************************************************************************
+ * @file     main.c
+ * @author   ����ԭ���Ŷ�(ALIENTEK)
+ * @version  V1.0
+ * @date     2020-03-13
+ * @brief    STM32H750��ɢ�����ļ�(.scf�ļ�)
+ * @license  Copyright (c) 2020-2032, �������������ӿƼ����޹�˾
+ ****************************************************************************************************
+ * @attention
+ *
+ * ʵ��ƽ̨:����ԭ�� Mini Pro H750������
+ * ������Ƶ:www.yuanzige.com
+ * ������̳:www.openedv.com
+ * ��˾��ַ:www.alientek.com
+ * �����ַ:openedv.taobao.com
+ *
+ ****************************************************************************************************
+ */
+
+
+#define m_stmflash_start                0X08000000      /* m_stmflash(STM32�ڲ�FLASH)����ʼ��ַ */
+#define m_stmflash_size                 0X20000         /* m_stmflash(STM32�ڲ�FLASH)��С,H750��128KB */
+
+#define m_qspiflash_start               0X90000000      /* m_qspiflash(����QSPI FLASH)����ʼ��ַ */
+#define m_qspiflash_size                0X800000        /* m_qspiflash(����QSPI FLASH)��С,W25Q64��8MB */
+
+#define m_stmsram_start                 0X24000000      /* m_stmsram(STM32�ڲ�RAM)����ʼ��ַ,������D1,AXI SRAM */
+#define m_stmsram_size                  0X80000         /* m_stmsram(STM32�ڲ�RAM)��С,AXI SRAM��512KB */
+
+
+
+LR_m_stmflash m_stmflash_start m_stmflash_size          /* LR_m_stmflash������  */
+{
+    ER_m_stmflash m_stmflash_start m_stmflash_size {    /* ER_m_stmfalsh������,��ʼ��ַΪ:m_stmflash_start,��СΪ:m_stmflash_size  */
+        *.o (RESET, +First)                             /* ����(+FIRST)��RESET(�ж�������)�η������,ʵ���Ͼ��ǰ��ж�������������m_stmflash_start */
+                                                        /* RESET��һ������,��ʾ�ж�������(��.s�ļ�����);+FIRST��ʾʱ��һ��Ҫ���ص�. */
+        * (InRoot$$Sections)                            /* �����еĿ��(C/C++��׼��)����root region.��__main.o,__scatter*.o�� */
+        * (Veneer$$Code)
+        libinit.o
+        libinit2.o
+        libshutdown.o
+        libshutdown2.o
+        __rtentry.o
+        __rtentry2.o
+        __rtentry4.o
+        rtexit.o
+        rtexit2.o
+
+        use_no_semi_2.o
+        heapauxi.o
+        use_no_semi.o
+        sys_stackheap_outer.o
+        exit.o
+        libspace.o
+        fpinit.o
+        lludivv7m.o
+        startup_stm32h750xx.o
+
+        rt_locale_intlibspace.o
+        lc_numeric_c.o
+        lc_ctype_c.o
+
+        main.o
+        drv_rcc.o
+        ;sys.o
+        ;usart.o
+        ;delay.o
+        pwr.o
+
+        /* H7��QSPI�ӿڲ�֧�ֶ�ʱд,��˱��������3���ļ��ŵ��ڲ�FLASH,�Ա�֤���Զ�QSPI FLASH��д�� */
+        qspi.o
+        norflash.o
+        norflash_ex.o
+
+        /* ���HAL���������ӵ��ڲ����ļ� */
+        system_stm32h7xx.o
+        stm32h7xx_hal.o
+        stm32h7xx_hal_cortex.o
+        stm32h7xx_hal_rcc.o
+        stm32h7xx_hal_rcc_ex.o
+        stm32h7xx_hal_gpio.o
+        stm32h7xx_hal_dma.o
+        stm32h7xx_hal_dma_ex.o
+        stm32h7xx_hal_qspi.o
+        stm32h7xx_hal_pwr.o
+        stm32h7xx_hal_pwr_ex.o
+        stm32h7xx_it.o
+    }
+    RW_m_stmsram m_stmsram_start m_stmsram_size {       /* RW_m_stmsram������,��ʼ��ַΪ:m_stmsram_start,��СΪ:m_stmsram_size. */
+        .ANY (+RW + ZI)                                 /* �������õ���RAM������������� */
+    }
+}
+
+LR_m_qspiflash m_qspiflash_start m_qspiflash_size       /* LR_m_qspiflash������ */
+{
+    ER_m_qspiflash m_qspiflash_start m_qspiflash_size { /* ER_m_qspiflash������,��ʼ��ַΪ:m_qspiflash_start,��СΪ:m_qspiflash_size */
+        .ANY (+RO)                                      /* ��ֻ������(+RO)�������,�������.�൱�ڳ�����Ǵ����������. */
+    }
+}
+
+
+
+
+
+
+
