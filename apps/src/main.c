@@ -16,9 +16,15 @@ int main(void)
   sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
   usart_init(115200);
+  // extix_init();
+  Key_Init_IT();
+
   while (1)
   {
-    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+    // HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
+    // delay_ms(1000);
+    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_15) == 0)
+      printf("fuck!\r\n");
     if (g_rx_flag == 1)
     {
       HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, g_usart_rx_sta, 10);
@@ -29,7 +35,6 @@ int main(void)
         g_rx_flag = 0;
       }
     }
-		HAL_Delay(1000);
   }
 }
 
