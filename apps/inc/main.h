@@ -2,10 +2,14 @@
 #define __MAIN_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "stdlib.h"
+#include "string.h"
+
 #include "stm32h7xx_hal.h"
 #include "drv_delay.h"
 #include "drv_led.h"
 #include "drv_rcc.h"
+#include "drv_usart.h"
 
 #endif /* __MAIN_H */
 

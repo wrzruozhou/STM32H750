@@ -1,10 +1,11 @@
 #include "main.h"
 
 static void MPU_Config(void);
-uint32_t sysclock = 0;  
+uint32_t sysclock = 0;
 
 int main(void)
 {
+  int i;
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable();                  /* 打开L1-Cache */
@@ -12,11 +13,22 @@ int main(void)
   HAL_Init();
 
   sys_stm32_clock_init(240, 2, 2, 4);
-	sysclock = HAL_RCC_GetSysClockFreq();
+  sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
+  usart_init(115200);
   while (1)
   {
     HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+    if (g_rx_flag == 1)
+    {
+      HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, g_usart_rx_sta, 10);
+      for (i = 0;i < g_usart_rx_sta;i++)
+      {
+        g_usart_rx_buf[i] = 0;
+        g_usart_rx_sta = 0;
+        g_rx_flag = 0;
+      }
+    }
 		HAL_Delay(1000);
   }
 }
