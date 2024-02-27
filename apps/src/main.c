@@ -3,9 +3,16 @@
 static void MPU_Config(void);
 uint32_t sysclock = 0;
 
+#if !(__ARMCC_VERSION >= 6010050)
+uint8_t mpudata[128] __attribute__((at(0X20002000)));
+#else
+uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
+#endif
+
 int main(void)
 {
   int i;
+  uint8_t t = 0;
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable();                  /* 打开L1-Cache */
@@ -16,25 +23,37 @@ int main(void)
   sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
   usart_init(115200);
-  // extix_init();
-  Key_Init_IT();
+  Key_Init();
 
   while (1)
   {
-    // HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
-    // delay_ms(1000);
-    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_15) == 0)
-      printf("fuck!\r\n");
-    if (g_rx_flag == 1)
+    i = key_scan();
+    if (i == WKUP_PRES)
     {
-      HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, g_usart_rx_sta, 10);
-      for (i = 0;i < g_usart_rx_sta;i++)
-      {
-        g_usart_rx_buf[i] = 0;
-        g_usart_rx_sta = 0;
-        g_rx_flag = 0;
-      }
+      mpu_set_protection(0X20002000, MPU_REGION_SIZE_128B,
+        MPU_REGION_NUMBER0, MPU_INSTRUCTION_ACCESS_ENABLE,
+        MPU_REGION_PRIV_RO_URO, MPU_ACCESS_NOT_SHAREABLE,
+        MPU_ACCESS_NOT_CACHEABLE,
+        MPU_ACCESS_BUFFERABLE); /* 只读,禁止共用,禁止 catch,允许缓冲 */
+      printf("MPU open!\r\n"); /* 提示 MPU 打开 */
     }
+    else if (i == KEY0_PRES)
+    {
+      printf("Start Writing data...\r\n");
+      sprintf((char*)mpudata, "MPU test array %d", t);
+      printf("Data Write finshed!\r\n");
+    }
+    else if (i == KEY1_PRES)
+    {
+      printf("Array data is:%s\r\n", mpudata);
+    }
+    else
+    {
+      delay_ms(10);
+    }
+    t++;
+    if ((t % 50) == 0)
+      HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
   }
 }
 

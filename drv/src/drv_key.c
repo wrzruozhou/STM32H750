@@ -17,23 +17,43 @@ void Key_Init(void)
     HAL_GPIO_Init(GPIOA, &GPIO_Init);
 }
 
+/*
+ * @brief 按键扫描函数
+*/
+uint8_t key_scan(void)
+{
+    /*两个低电平触发一个高电平触发*/
+    if (KEY_UP_Read == 1)
+    {
+        delay_ms(10);
+        if (KEY_UP_Read == 0)
+        {
+            return WKUP_PRES;
+        }
+    }
+    else if (KEY_KEY0_Read == 0)
+    {
+        delay_ms(10);
+        if (KEY_KEY0_Read == 1)
+        {
+            return KEY0_PRES;
+        }
+    }
+    else if (KEY_KEY1_Read == 0)
+    {
+        delay_ms(10);
+        if (KEY_KEY1_Read == 1)
+        {
+            return KEY1_PRES;
+        }
+    }
+    return 10;
+}
+
 void Key_Init_IT(void)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
-#if 0
-    GPIO_InitTypeDef GPIO_Init;
-    GPIO_Init.Mode = GPIO_MODE_IT_FALLING;
-    GPIO_Init.Pull = GPIO_PULLUP;
-    GPIO_Init.Pin = KEY_0_Pin | KEY_1_Pin;
-    GPIO_Init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    HAL_GPIO_Init(GPIOA, &GPIO_Init);
-
-    GPIO_Init.Mode = GPIO_MODE_IT_RISING;
-    GPIO_Init.Pull = GPIO_PULLDOWN;
-    GPIO_Init.Pin = KEY_UP_Pin;
-    HAL_GPIO_Init(GPIOA, &GPIO_Init);
-#endif
     GPIO_InitTypeDef GPIO_Init;
     GPIO_Init.Mode = GPIO_MODE_IT_FALLING;
     GPIO_Init.Pull = GPIO_PULLUP;

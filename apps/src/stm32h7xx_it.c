@@ -63,6 +63,7 @@ void HardFault_Handler(void)
   }
 }
 
+#if 0
 /**
   * @brief  This function handles Memory Manage exception.
   * @param  None
@@ -75,6 +76,7 @@ void MemManage_Handler(void)
   {
   }
 }
+#endif
 
 /**
   * @brief  This function handles Bus Fault exception.

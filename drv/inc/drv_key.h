@@ -18,8 +18,19 @@
 #define KEY_0_Pin GPIO_PIN_1
 #define KEY_1_Pin GPIO_PIN_15
 
+#define KEY_UP_Read HAL_GPIO_ReadPin(KEY_UP_Port,KEY_UP_Pin)
+#define KEY_KEY0_Read HAL_GPIO_ReadPin(KEY_0_Port,KEY_0_Pin)
+#define KEY_KEY1_Read HAL_GPIO_ReadPin(KEY_1_Port,KEY_1_Pin)
+
+enum key_status {
+    WKUP_PRES = 0,
+    KEY0_PRES,
+    KEY1_PRES
+};
+
 void Key_Init(void);
 void Key_Init_IT(void);
+uint8_t key_scan(void);
 
 
 #endif // !__DRV_KEY_H
