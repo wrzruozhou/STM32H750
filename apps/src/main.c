@@ -24,9 +24,18 @@ int main(void)
   LED_Config();
   usart_init(115200);
   Key_Init();
+  mpu_memory_protection();
+  lcd_init();
 
   while (1)
   {
+    lcd_fill(100, 100, 300, 200, WHITE);
+    lcd_draw_point(400, 400, WHITE);
+    lcd_draw_line(0, 0, 250, 600, YELLOW);
+    lcd_draw_hline(200, 700, 200, BLUE);
+    lcd_draw_rectangle(250, 200, 450, 600, WHITE);
+    lcd_draw_circle(300, 50, 30, BLUE);
+
     i = key_scan();
     if (i == WKUP_PRES)
     {

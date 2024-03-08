@@ -12,6 +12,7 @@
 #include "drv_usart.h"
 #include "drv_key.h"
 #include "drv_mpu.h"
+#include "drv_lcd.h"
 
 #endif /* __MAIN_H */
 
