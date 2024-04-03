@@ -13,6 +13,8 @@
 #include "drv_key.h"
 #include "drv_mpu.h"
 #include "drv_lcd.h"
+#include "drv_iic.h"
+#include "drv_at24cxx.h"
 
 #endif /* __MAIN_H */
 

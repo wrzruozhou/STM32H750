@@ -15,7 +15,7 @@ int main(void)
   uint8_t t = 0;
   /* Configure the MPU attributes */
   MPU_Config();
-  sys_cache_enable();                  /* 打开L1-Cache */
+  sys_cache_enable(); /* 打开L1-Cache */
 
   HAL_Init();
 
@@ -25,48 +25,23 @@ int main(void)
   usart_init(115200);
   Key_Init();
   mpu_memory_protection();
-  lcd_init();
+  // lcd_init();
+  at24cxx_init();
 
   while (1)
   {
-    lcd_fill(100, 100, 300, 200, WHITE);
-    lcd_draw_point(400, 400, WHITE);
-    lcd_draw_line(0, 0, 250, 600, YELLOW);
-    lcd_draw_hline(200, 700, 200, BLUE);
-    lcd_draw_rectangle(250, 200, 450, 600, WHITE);
-    lcd_draw_circle(300, 50, 30, BLUE);
-
-    i = key_scan();
-    if (i == WKUP_PRES)
+    for (i = 0; i < 100; i++)
     {
-      mpu_set_protection(0X20002000, MPU_REGION_SIZE_128B,
-        MPU_REGION_NUMBER0, MPU_INSTRUCTION_ACCESS_ENABLE,
-        MPU_REGION_PRIV_RO_URO, MPU_ACCESS_NOT_SHAREABLE,
-        MPU_ACCESS_NOT_CACHEABLE,
-        MPU_ACCESS_BUFFERABLE); /* 只读,禁止共用,禁止 catch,允许缓冲 */
-      printf("MPU open!\r\n"); /* 提示 MPU 打开 */
+      at24cxx_write_one_byte(0x04, 0x30 + i);
+      if (i % 2)
+      {
+        t = at24cxx_read_one_byte(0x04);
+        printf("%d\n", t);
+      }
+      delay_ms(1000);
     }
-    else if (i == KEY0_PRES)
-    {
-      printf("Start Writing data...\r\n");
-      sprintf((char*)mpudata, "MPU test array %d", t);
-      printf("Data Write finshed!\r\n");
-    }
-    else if (i == KEY1_PRES)
-    {
-      printf("Array data is:%s\r\n", mpudata);
-    }
-    else
-    {
-      delay_ms(10);
-    }
-    t++;
-    if ((t % 50) == 0)
-      HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
   }
 }
-
-
 
 static void MPU_Config(void)
 {
@@ -93,4 +68,3 @@ static void MPU_Config(void)
   /* Enable the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
-

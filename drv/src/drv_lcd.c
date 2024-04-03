@@ -466,7 +466,7 @@ void lcd_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint
  * @brief   画圆
  * @param   x,y ：圆中心坐标
  * @param   r   :半径
- * @param   color：圆的颜色
+ * @param   color ：圆的颜色
  * @retval  无
 */
 void lcd_draw_circle(uint16_t x0, uint16_t y0, uint8_t r, uint16_t color)
