@@ -9,6 +9,9 @@ uint8_t mpudata[128] __attribute__((at(0X20002000)));
 uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
 #endif
 
+char temp[128] = "中原一点红";
+char temp_read[128];
+
 int main(void)
 {
   int i;
@@ -27,19 +30,25 @@ int main(void)
   mpu_memory_protection();
   // lcd_init();
   at24cxx_init();
-
+  at24cxx_write(0x0a, temp, strlen(temp));
   while (1)
   {
+#if 0
     for (i = 0; i < 100; i++)
     {
-      at24cxx_write_one_byte(0x04, 0x30 + i);
+      at24cxx_write_one_byte(0x05, 0x30 + i);
       if (i % 2)
       {
-        t = at24cxx_read_one_byte(0x04);
+        t = at24cxx_read_one_byte(0x05);
         printf("%d\n", t);
       }
       delay_ms(1000);
     }
+#else
+    at24cxx_read(0x0a, temp_read, 20);
+    printf("%s\n", temp_read);
+    delay_ms(1000);
+#endif
   }
 }
 
