@@ -108,6 +108,7 @@ void USART1_IRQHandler(void)
 /* 可以定制化你所最爱的中断回调函数了 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 {
+#if 0
     if (huart->Instance == USART1)
     {
         g_usart_rx_buf[g_usart_rx_sta] = g_rx_buffer[0];
@@ -117,6 +118,43 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
             g_rx_flag = 1;
         }
     }
+#else
+    if (huart->Instance == USART1)                             /* 如果是串口1 */
+    {
+        if ((g_usart_rx_sta & 0x8000) == 0)                    /* 接受未完成 */
+        {
+            if (g_usart_rx_sta & 0x4000)                       /* 接受到了0x0d */
+            {
+                if (g_rx_buffer[0] != 0x0a)
+                {
+                    g_usart_rx_sta = 0;                       /* 接受错误重新开始 */
+                }
+                else
+                {
+                    g_usart_rx_sta |= 0x8000;                 /* 接受完成了 */
+                }
+            }
+            else                                              /* 还没接收到0x0d */
+            {
+                if (g_rx_buffer[0] == 0x0d)
+                {
+                    g_usart_rx_sta |= 0x4000;
+                }
+                else
+                {
+                    g_usart_rx_buf[g_usart_rx_sta & 0X3FFF] = g_rx_buffer[0];
+                    g_usart_rx_sta++;
+                    if (g_usart_rx_sta > (USART_REC_LEN - 1))
+                    {
+                        g_usart_rx_sta = 0;                   /* ½ÓÊÕÊý¾Ý´íÎó,ÖØÐÂ¿ªÊ¼½ÓÊÕ */
+                    }
+                }
+            }
+        }
+
+        HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE);
+    }
+#endif
 }
 
 

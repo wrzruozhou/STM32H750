@@ -12,6 +12,7 @@
 #include "drv_usart.h"
 #include "drv_key.h"
 #include "drv_mpu.h"
+#include "USMART/usmart.h"
 
 #endif /* __MAIN_H */
 
