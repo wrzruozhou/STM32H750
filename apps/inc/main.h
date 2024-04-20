@@ -15,6 +15,7 @@
 #include "drv_lcd.h"
 #include "drv_iic.h"
 #include "drv_at24cxx.h"
+#include "USMART\usmart.h"
 
 #endif /* __MAIN_H */
 

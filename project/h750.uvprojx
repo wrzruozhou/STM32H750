@@ -340,7 +340,7 @@
               <MiscControls>-Wno-invalid-source-encoding</MiscControls>
               <Define>STM32H750xx,USE_HAL_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\drv</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -457,6 +457,31 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>UMSART</GroupName>
+          <Files>
+            <File>
+              <FileName>usmart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_str.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart_str.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Docx</GroupName>
         </Group>
         <Group>
@@ -556,6 +581,16 @@
               <FileName>stm32h7xx_ll_fmc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_fmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</FilePath>
             </File>
           </Files>
         </Group>

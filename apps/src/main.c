@@ -26,11 +26,11 @@ int main(void)
   sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
   usart_init(115200);
+  usmart_dev.init(240);
   Key_Init();
   mpu_memory_protection();
   // lcd_init();
   at24cxx_init();
-  at24cxx_write(0x0a, temp, strlen(temp));
   while (1)
   {
 #if 0
@@ -45,9 +45,9 @@ int main(void)
       delay_ms(1000);
     }
 #else
-    at24cxx_read(0x0a, temp_read, 20);
-    printf("%s\n", temp_read);
-    delay_ms(1000);
+    // at24cxx_read(0x0a, temp_read, 20);
+    // printf("%s\n", temp_read);
+    // delay_ms(1000);
 #endif
   }
 }

@@ -1,5 +1,8 @@
 #include "drv_at24cxx.h"
 
+char at24cxx_readbuf[128] = "0";
+uint16_t lens;
+
 void at24cxx_init(void)
 {
     iic_init();
@@ -44,6 +47,7 @@ void at24cxx_write_one_byte(uint8_t addr, uint8_t data)
  */
 void at24cxx_read(uint8_t addr, uint8_t* pbuf, uint16_t datalen)
 {
+    lens = datalen;
     while (datalen--)
     {
         *pbuf++ = at24cxx_read_one_byte(addr++);
@@ -64,4 +68,21 @@ void at24cxx_write(uint8_t addr, uint8_t* pbuf, uint16_t datalen)
         addr++;
         pbuf++;
     }
+}
+
+/**
+ * @brief   用USMART来控制
+ * @param   addr    从哪个地址开始写入
+ * @param   datalen 需要写入数据的长度
+*/
+void at24cxx_read_umsart(uint8_t addr, uint16_t datalen)
+{
+    int i = 0;
+    uint16_t temp = datalen;
+    while (datalen--)
+    {
+        at24cxx_readbuf[temp - datalen - 1] = at24cxx_read_one_byte(addr++);
+        // printf("%c", at24cxx_readbuf[temp - datalen]);
+    }
+    printf("---->%s", at24cxx_readbuf);
 }
