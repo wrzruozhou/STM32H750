@@ -16,6 +16,7 @@ int main(void)
 {
   int i;
   uint8_t t = 0;
+  uint32_t temp = 0;
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable(); /* 打开L1-Cache */
@@ -27,28 +28,32 @@ int main(void)
   LED_Config();
   usart_init(115200);
   usmart_dev.init(240);
-  Key_Init();
+  // Key_Init();
   mpu_memory_protection();
   // lcd_init();
   at24cxx_init();
+  TIMx_InputCapture_Init(0xffff, 240 - 1);  /*以1Mhz的频率进行捕获*/
+
   while (1)
   {
-#if 0
-    for (i = 0; i < 100; i++)
+    if (g_timxchy_cap_sta & 0x80)
     {
-      at24cxx_write_one_byte(0x05, 0x30 + i);
-      if (i % 2)
-      {
-        t = at24cxx_read_one_byte(0x05);
-        printf("%d\n", t);
-      }
-      delay_ms(1000);
+      temp = g_timxchy_cap_sta & 0x3f;
+      temp *= 65536;
+      temp += g_timxchy_cap_val;
+      printf("high:%d us\r\n", temp);
+      g_timxchy_cap_sta = 0;
     }
-#else
-    // at24cxx_read(0x0a, temp_read, 20);
-    // printf("%s\n", temp_read);
-    // delay_ms(1000);
-#endif
+    t++;
+    if (t > 20)
+    {
+      t = 0;
+      HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+      HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
+      HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
+    }
+    delay_ms(10);
+
   }
 }
 

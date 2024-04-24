@@ -16,6 +16,7 @@
 #include "drv_iic.h"
 #include "drv_at24cxx.h"
 #include "USMART\usmart.h"
+#include "drv_TIM.h"
 
 #endif /* __MAIN_H */
 
