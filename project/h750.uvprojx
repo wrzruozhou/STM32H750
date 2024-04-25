@@ -454,9 +454,9 @@
               <FilePath>..\drv\src\drv_at24cxx.c</FilePath>
             </File>
             <File>
-              <FileName>drv_TIM.c</FileName>
+              <FileName>drv_remote.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\drv\src\drv_TIM.c</FilePath>
+              <FilePath>..\drv\src\drv_remote.c</FilePath>
             </File>
           </Files>
         </Group>

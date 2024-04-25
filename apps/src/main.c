@@ -16,7 +16,8 @@ int main(void)
 {
   int i;
   uint8_t t = 0;
-  uint32_t temp = 0;
+  char* str = 0;
+  uint8_t key = 0;
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable(); /* 打开L1-Cache */
@@ -32,18 +33,102 @@ int main(void)
   mpu_memory_protection();
   // lcd_init();
   at24cxx_init();
-  TIMx_InputCapture_Init(0xffff, 240 - 1);  /*以1Mhz的频率进行捕获*/
+  remote_init();
 
   while (1)
   {
-    if (g_timxchy_cap_sta & 0x80)
+    key = remote_scan();
+    if (key)
     {
-      temp = g_timxchy_cap_sta & 0x3f;
-      temp *= 65536;
-      temp += g_timxchy_cap_val;
-      printf("high:%d us\r\n", temp);
-      g_timxchy_cap_sta = 0;
+      switch (key)
+      {
+      case 0:
+        str = "ERROR";
+        break;
+
+      case 69:
+        str = "POWER";
+        break;
+
+      case 70:
+        str = "UP";
+        break;
+
+      case 64:
+        str = "PLAY";
+        break;
+
+      case 71:
+        str = "ALIENTEK";
+        break;
+
+      case 67:
+        str = "RIGHT";
+        break;
+
+      case 68:
+        str = "LEFT";
+        break;
+
+      case 7:
+        str = "VOL-";
+        break;
+
+      case 21:
+        str = "DOWN";
+        break;
+
+      case 9:
+        str = "VOL+";
+        break;
+
+      case 22:
+        str = "1";
+        break;
+
+      case 25:
+        str = "2";
+        break;
+
+      case 13:
+        str = "3";
+        break;
+
+      case 12:
+        str = "4";
+        break;
+
+      case 24:
+        str = "5";
+        break;
+
+      case 94:
+        str = "6";
+        break;
+
+      case 8:
+        str = "7";
+        break;
+
+      case 28:
+        str = "8";
+        break;
+
+      case 90:
+        str = "9";
+        break;
+
+      case 66:
+        str = "0";
+        break;
+
+      case 74:
+        str = "DELETE";
+        break;
+      }/* ÏÔÊ¾SYMBOL */
+      printf("%s\n", str);
     }
+
     t++;
     if (t > 20)
     {

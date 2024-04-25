@@ -17,6 +17,7 @@
 #include "drv_at24cxx.h"
 #include "USMART\usmart.h"
 #include "drv_TIM.h"
+#include "drv_remote.h"
 
 #endif /* __MAIN_H */
 
