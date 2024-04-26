@@ -620,8 +620,8 @@ static uint32_t lcd_pow(uint8_t m, uint8_t n)
     while (n--)
     {
         result *= m;
-        return result;
     }
+    return result;
 }
 /**
  * @brief   显示len个数字
@@ -645,6 +645,7 @@ void lcd_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t siz
             if (temp == 0)
             {
                 lcd_show_char(x + (size / 2) * t, y, ' ', size, 0, color);
+                continue;       /*继续下一个位*/
             }
             else
             {
