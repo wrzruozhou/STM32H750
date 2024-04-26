@@ -27,14 +27,19 @@ int main(void)
   mpu_memory_protection();
   lcd_init();
 
+  // lcd_fill(100, 100, 300, 200, WHITE);
+  // lcd_draw_point(400, 400, WHITE);
+  // lcd_draw_line(0, 0, 250, 600, YELLOW);
+  // lcd_draw_hline(200, 700, 200, BLUE);
+  // lcd_draw_rectangle(250, 200, 450, 600, WHITE);
+  // lcd_draw_circle(300, 50, 30, BLUE);
+  // lcd_fill_circle(150, 200, 100, GREEN);
+  lcd_show_char(100, 200, '%', 32, 1, YELLOW);
+  lcd_show_num(100, 300, 550, 3, 32, GREEN);
+  lcd_show_xnum(100, 350, 100, 3, 24, 1, GREEN);
+  lcd_show_string(20, 600, 100, 100, 12, "xihaiqingge", GREEN);
   while (1)
   {
-    lcd_fill(100, 100, 300, 200, WHITE);
-    lcd_draw_point(400, 400, WHITE);
-    lcd_draw_line(0, 0, 250, 600, YELLOW);
-    lcd_draw_hline(200, 700, 200, BLUE);
-    lcd_draw_rectangle(250, 200, 450, 600, WHITE);
-    lcd_draw_circle(300, 50, 30, BLUE);
 
     i = key_scan();
     if (i == WKUP_PRES)
