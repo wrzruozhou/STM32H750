@@ -23,6 +23,9 @@ int main(void)
   sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
   usart_init(115200);
+  usmart_dev.init(240);
+
+  mpu_memory_protection();
   Key_Init();
   mpu_memory_protection();
   lcd_init();

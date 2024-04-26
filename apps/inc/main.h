@@ -13,6 +13,7 @@
 #include "drv_key.h"
 #include "drv_mpu.h"
 #include "drv_lcd.h"
+#include "USMART/usmart.h"
 
 #endif /* __MAIN_H */
 

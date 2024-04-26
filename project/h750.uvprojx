@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32H750xx,USE_HAL_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include</IncludePath>
+              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\drv</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -465,6 +465,27 @@
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\CMSIS\Device\ST\STM32H7xx\Source\Templates\system_stm32h7xx.c</FilePath>
+          <GroupName>USMART</GroupName>
+          <Files>
+            <File>
+              <FileName>usmart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_str.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USMART\usmart_str.c</FilePath>
             </File>
           </Files>
         </Group>
