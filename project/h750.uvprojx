@@ -465,6 +465,10 @@
               <FileName>system_stm32h7xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\CMSIS\Device\ST\STM32H7xx\Source\Templates\system_stm32h7xx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>USMART</GroupName>
           <Files>
             <File>
@@ -566,6 +570,16 @@
               <FileName>stm32h7xx_ll_fmc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_fmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_tim_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</FilePath>
             </File>
           </Files>
         </Group>
