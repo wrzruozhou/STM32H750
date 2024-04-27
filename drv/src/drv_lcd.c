@@ -1,4 +1,5 @@
 #include "drv_lcd.h"
+#include "lcd_font.h"
 
 /* LCD的画笔颜色和背景色 */
 uint32_t g_point_color = 0xF800;
@@ -498,6 +499,233 @@ void lcd_draw_circle(uint16_t x0, uint16_t y0, uint8_t r, uint16_t color)
             di += 10 + 4 * (a - b);
             b--;
         }
+    }
+}
+
+/**
+ * @brief   填充实心圆
+ * @param   x:圆的x坐标
+ * @param   y:圆的y坐标
+ * @param   r:半径
+ * @param   color:填充颜色
+ * @retval  无
+*/
+void lcd_fill_circle(uint16_t x, uint16_t y, uint16_t r, uint16_t color)
+{
+    uint32_t i;
+    uint32_t imax = ((uint32_t)r * 707) / 1000 + 1;
+    uint32_t sqmax = (uint32_t)r * (uint32_t)r + (uint32_t)r / 2;
+    uint32_t xr = r;
+
+    lcd_draw_hline(x - r, y, 2 * r, color);
+
+    for (i = 1; i <= imax; i++)
+    {
+        if ((i * i + xr * xr) > sqmax)
+        {
+            /* draw lines from outside */
+            if (xr > imax)
+            {
+                lcd_draw_hline(x - i + 1, y + xr, 2 * (i - 1), color);
+                lcd_draw_hline(x - i + 1, y - xr, 2 * (i - 1), color);
+            }
+
+            xr--;
+        }
+
+        /* draw lines from inside (center) */
+        lcd_draw_hline(x - xr, y + i, 2 * xr, color);
+        lcd_draw_hline(x - xr, y - i, 2 * xr, color);
+    }
+}
+
+/**
+ * @brief   在指定位置显示一个字符
+ * @param   x:显示字符的x坐标
+ * @param   y:显示字符的y坐标
+ * @param   char:要显示的字符
+ * @param   size:字体的大小
+                @arg:12  大小为12
+                @arg:16 大小为16
+                @arg:24 大小为24
+                @arg:32 大小为32
+* @param    mode:叠加方式(1);非叠加方式(0);
+* @param    color:字符颜色;
+* @retval   无
+*/
+void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode, uint16_t color)
+{
+    uint8_t temp, t1, t;
+    uint16_t y0 = y;
+    uint8_t csize = 0;
+    uint8_t* pfont = 0;
+    csize = (size / 8 + ((size % 8) ? 1 : 0)) * (size / 2);
+
+    chr = chr - ' ';            /*得到偏移后值(ASCII字库是从空格开始取模的)*/
+    switch (size)
+    {
+    case 12:
+        pfont = (uint8_t*)asc2_1206[chr];
+        break;
+    case 16:
+        pfont = (uint8_t*)asc2_1608[chr];
+        break;
+    case 24:
+        pfont = (uint8_t*)asc2_2412[chr];
+        break;
+    case 32:
+        pfont = (uint8_t*)asc2_3216[chr];
+        break;
+    default:
+        return;
+    }
+    for (t = 0; t < csize; t++)
+    {
+        temp = pfont[t];        /*获取字符的点阵数据*/
+        for (t1 = 0; t1 < 8; t1++)
+        {
+            if (temp & 0x80)    /*有效点需要显示*/
+            {
+                lcd_draw_point(x, y, color);    /*画点出来，需要显示这个点*/
+            }
+            else if (mode == 0) /*无效点，不显示*/
+            {
+                lcd_draw_point(x, y, g_back_color); /*画背景色，相当于这个点不显示*/
+            }
+
+            temp <<= 1; /*左移1位，获取下一个位的状态*/
+            y++;
+            if (y >= lcddev.height)return;     /*超区域了*/
+            if ((y - y0) == size)   /*显示完一列了*/
+            {
+                y = y0;
+                x++;
+                if (x >= lcddev.width) return;         /*x坐标超出区域了*/
+                break;
+            }
+        }
+
+    }
+}
+
+/**
+ * @brief   平方函数
+ * @param   m:底数
+ * @param   n:指数
+ * @retval  m的n次方
+*/
+static uint32_t lcd_pow(uint8_t m, uint8_t n)
+{
+    uint32_t result = 1;
+    while (n--)
+    {
+        result *= m;
+    }
+    return result;
+}
+/**
+ * @brief   显示len个数字
+ * @param   x,y:起始坐标
+ * @param   num:数值(0 ~ 2^32)
+ * @param   len:显示数字的位数
+ * @param   size:选择字体
+ *          @arg    12,16,24,32
+ * @param   color:数字的颜色
+ * @retval  无
+*/
+void lcd_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint16_t color)
+{
+    uint8_t t, temp;
+    uint8_t enshow = 0;
+    for (t = 0; t < len; t++)
+    {
+        temp = (num / lcd_pow(10, len - t - 1)) % 10;      /*获取对应位的数字*/
+        if (enshow == 0 && t < (len - 1))                       /*没有使能显示但还有位要显示*/
+        {
+            if (temp == 0)
+            {
+                lcd_show_char(x + (size / 2) * t, y, ' ', size, 0, color);
+                continue;       /*继续下一个位*/
+            }
+            else
+            {
+                enshow = 1;
+            }
+        }
+        lcd_show_char(x + (size / 2) * t, y, temp + '0', size, 0, color);       /*显示字符*/
+    }
+
+}
+
+/**
+ * @brief   拓展显示len个数字
+ * @param   x,y起始坐标
+ * @param   len:显示数字的位数
+ * @param   size:选择字体   12/16/24/32
+ * @param   mode:显示模式
+ *          [7:0]0,不填充 1,填充
+ *          [6:1]保留
+ *          [0]0:非叠加显示 1:叠加显示
+ * @param   color:数字的颜色
+ * @retval  无
+*/
+void lcd_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint8_t mode, uint16_t color)
+{
+    uint8_t t, temp;
+    uint8_t enshow = 0;
+    for (t = 0; t < len; t++)
+    {
+        temp = (num / lcd_pow(10, len - t - 1)) % 10;
+        if (enshow == 0 && t < (len - 1))
+        {
+            if (temp == 0)
+            {
+                if (mode & 0x80)    /*高位需要填充0*/
+                {
+                    lcd_show_char(x + (size / 2) * t, y, '0', size, mode & 0x01, color);        /*用0占位*/
+                }
+                else
+                {
+                    lcd_show_char(x + (size / 2) * t, y, ' ', size, mode & 0x01, color);        /*用空格占位*/
+                }
+                continue;
+            }
+            else
+            {
+                enshow = 1;
+            }
+        }
+        lcd_show_char(x + (size / 2) * t, y, temp + '0', size, mode & 0x01, color);
+    }
+}
+
+/**
+ * @brief   显示字符串
+ * @param   x,y:起始坐标
+ * @param   width,height区域宽度
+ * @param   size:选择的字体
+ * @param   p:字符串的首地址
+ * @param   color:字符串的颜色
+ * @retval  无
+ *
+*/
+void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char* p, uint16_t color)
+{
+    uint8_t x0 = x;
+    width += x;
+    height += y;
+    while ((*p <= '~') && (*p >= ' '))
+    {
+        if (x > width)
+        {
+            x = x0;
+            y += size;
+        }
+        if (y >= height)break;
+
+        lcd_show_char(x, y, *p, size, 0, color);
+        x += size / 2;
+        p++;
     }
 }
 

@@ -118,6 +118,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
             g_rx_flag = 1;
         }
     }
+
 #else
     if (huart->Instance == USART1)                             /* Èç¹ûÊÇ´®¿Ú1 */
     {
