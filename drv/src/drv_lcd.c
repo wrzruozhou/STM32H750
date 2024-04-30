@@ -729,7 +729,71 @@ void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, ui
     }
 }
 
+/**
+ * @brief   清空屏幕在右上角显示"RST"
+ * @param   无
+ * @retval  无
+*/
+void load_draw_dialog(void)
+{
+    lcd_clear(WHITE);
+    lcd_show_string(lcddev.width - 24, 0, 200, 16, 16, "RST", BLUE);
+}
 
+/**
+ * @brief   画粗的要死的线
+ * @param   x1,y1:起点坐标
+ * @param   x2,y2:终点坐标
+ * @param   size:线的大小
+ * @param   color:线的颜色
+ * @retval  无
+*/
+void lcd_draw_bline(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t size, uint16_t color)
+{
+    uint16_t t;
+    int xerr = 0, yerr = 0, delta_x, delta_y, distance;
+    int incx, incy, row, col;
+    if (x1 < size || x2 < size || y1 < size || y2 < size)return;
+    delta_x = x2 - x1;      /*计算坐标增量*/
+    delta_y = y2 - y1;
+    row = x1;
+    col = y1;
+
+    if (delta_x > 0)incx = 1;   /*设置方向*/
+    else if (delta_x == 0)incx = 0; /*垂直线*/
+    else
+    {
+        incx = -1;
+        delta_x = -delta_x;
+    }
+
+    if (delta_y > 0)incy = 1;
+    else if (delta_y == 0)incy = 0;
+    else
+    {
+        incy = -1;
+        delta_y = -delta_y;
+    }
+    if (delta_x > delta_y)distance = delta_x;   /*选取基本增量坐标轴*/
+    else distance = delta_y;
+
+    for (t = 0; t <= distance + 1; t++)
+    {
+        lcd_fill_circle(row, col, size, color); /*画点*/
+        xerr += delta_x;
+        yerr += delta_y;
+        if (xerr > distance)
+        {
+            xerr -= distance;
+            row += incx;
+        }
+        if (yerr > distance)
+        {
+            yerr -= distance;
+            col += incx;
+        }
+    }
+}
 
 /* nt35510初始化代码，由厂家提供 */
 void lcd_ex_nt35510_reginit(void)

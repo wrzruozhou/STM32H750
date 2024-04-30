@@ -18,6 +18,8 @@
 #include "USMART\usmart.h"
 #include "drv_TIM.h"
 #include "drv_remote.h"
+#include "drv_gt911.h"
+#include "drv_touch.h"
 
 #endif /* __MAIN_H */
 

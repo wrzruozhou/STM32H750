@@ -458,6 +458,21 @@
               <FileType>1</FileType>
               <FilePath>..\drv\src\drv_remote.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_tciic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_tciic.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_gt911.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_gt911.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_touch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_touch.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

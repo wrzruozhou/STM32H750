@@ -9,7 +9,6 @@ uint8_t mpudata[128] __attribute__((at(0X20002000)));
 uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
 #endif
 
-char temp[128] = "中原一点红";
 char temp_read[128];
 
 int main(void)
@@ -26,27 +25,18 @@ int main(void)
 
   sys_stm32_clock_init(240, 2, 2, 4);
   sysclock = HAL_RCC_GetSysClockFreq();
+  mpu_memory_protection();
   LED_Config();
   usart_init(115200);
   usmart_dev.init(240);
-
-  mpu_memory_protection();
-  usmart_dev.init(240);
   // Key_Init();
-  mpu_memory_protection();
-  lcd_init();
 
-  // lcd_fill(100, 100, 300, 200, WHITE);
-  // lcd_draw_point(400, 400, WHITE);
-  // lcd_draw_line(0, 0, 250, 600, YELLOW);
-  // lcd_draw_hline(200, 700, 200, BLUE);
-  // lcd_draw_rectangle(250, 200, 450, 600, WHITE);
-  // lcd_draw_circle(300, 50, 30, BLUE);
-  // lcd_fill_circle(150, 200, 100, GREEN);
-  lcd_show_char(100, 200, '%', 32, 1, YELLOW);
-  lcd_show_num(100, 300, 550, 3, 32, GREEN);
-  lcd_show_xnum(100, 350, 100, 3, 24, 1, GREEN);
-  lcd_show_string(20, 600, 100, 100, 12, "xihaiqingge", GREEN);
+  at24cxx_init();
+  lcd_init();
+  // gt9xxx_init();
+  tp_dev.init();
+  load_draw_dialog();
+  ctp_test();
   while (1)
   {
     key = remote_scan();
