@@ -38,7 +38,6 @@ void remote_init(void)
 */
 void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* htim)
 {
-    printf("HAL_TIM_IC_MspInit");
     if (htim->Instance == TIM1)
     {
         GPIO_InitTypeDef GPIO_Init;

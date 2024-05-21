@@ -20,6 +20,7 @@
 #include "drv_remote.h"
 #include "drv_gt911.h"
 #include "drv_touch.h"
+#include "drv_norflash_ex.h"
 
 #endif /* __MAIN_H */
 

@@ -9,14 +9,20 @@ uint8_t mpudata[128] __attribute__((at(0X20002000)));
 uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
 #endif
 
-char temp_read[128];
+/*这里是测试FLASH的*/
+const uint8_t g_text_buf[] = { "zhong yu zuo le zhe ge jue ding" };
+#define TEXT_SIZE sizeof(g_text_buf)
 
+char temp_read[128];
+uint16_t id = 0;
 int main(void)
 {
   int i;
   uint8_t t = 0;
   char* str = 0;
   uint8_t key = 0;
+  uint32_t flashsize;
+  uint8_t datatemp[TEXT_SIZE];
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable(); /* 打开L1-Cache */
@@ -30,13 +36,19 @@ int main(void)
   usart_init(115200);
   usmart_dev.init(240);
   // Key_Init();
-
+  //remote_init();
   at24cxx_init();
   lcd_init();
-  // gt9xxx_init();
   tp_dev.init();
   load_draw_dialog();
-  ctp_test();
+
+
+  id = norflash_ex_read_id();
+  printf("the flash id is %x\n", id);
+  // ctp_test();
+  flashsize = 16 * 1024 * 1024;
+  sprintf((char*)datatemp, "%s%d", (char*)g_text_buf, i);
+  norflash_ex_write((uint8_t*)datatemp, flashsize - 100, TEXT_SIZE);
   while (1)
   {
     key = remote_scan();
@@ -139,8 +151,8 @@ int main(void)
       HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
       HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
     }
-    delay_ms(10);
-
+    delay_ms(1000);
+    norflash_ex_read(datatemp, flashsize - 100, TEXT_SIZE);
   }
 }
 

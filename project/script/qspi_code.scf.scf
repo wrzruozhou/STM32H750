@@ -77,9 +77,9 @@ LR_m_stmflash m_stmflash_start m_stmflash_size          /* LR_m_stmflash���
         pwr.o
 
         /* H7��QSPI�ӿڲ�֧�ֶ�ʱд,��˱��������3���ļ��ŵ��ڲ�FLASH,�Ա�֤���Զ�QSPI FLASH��д�� */
-        qspi.o
-        norflash.o
-        norflash_ex.o
+        drv_qspi.o
+        drv_noflash.o
+        drv_norflash_ex.o
 
         /* ���HAL���������ӵ��ڲ����ļ� */
         system_stm32h7xx.o

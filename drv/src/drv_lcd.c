@@ -70,8 +70,8 @@ void lcd_display_off(void)
 /*读取某个点的颜色值*/
 uint32_t lcd_read_point(uint16_t x, uint16_t y)
 {
-    uint16_t r = 0, g = 0, b = 0;
-    if (x >= lcddev.width || y >= lcddev.height) return 0;
+	uint16_t r = 0, g = 0, b = 0;
+	if (x >= lcddev.width || y >= lcddev.height) return 0;
 }
 #endif
 
@@ -310,14 +310,15 @@ void lcd_init(void)
 	lcd_write_reg(0xF003, 0x0008);
 	lcd_write_reg(0xF004, 0x0001);
 
-	lcd_wr_regno(0xdb00);
-	lcddev.id = lcd_rd_data();
-	lcddev.id <<= 8;
-	lcd_wr_regno(0xdc01);
-	lcddev.id |= lcd_rd_data();
+	/*这段代码是根据官方手册提供的*/
+	// lcd_wr_regno(0xdb00);
+	// lcddev.id = lcd_rd_data();
+	// lcddev.id <<= 8;
+	// lcd_wr_regno(0xdc01);
+	// lcddev.id |= lcd_rd_data();
 
-	delay_ms(5);
-	printf("LCD ID:%x\r\n", lcddev.id);
+	// delay_ms(5);
+	// printf("LCD ID:%x\r\n", lcddev.id);
 
 	lcd_wr_regno(0xc500);
 	lcddev.id = lcd_rd_data();
@@ -341,7 +342,7 @@ void lcd_init(void)
 	lcd_clear(RED);
 }
 
-void HAL_SRAM_MspInit(SRAM_HandleTypeDef *hsram)
+void HAL_SRAM_MspInit(SRAM_HandleTypeDef* hsram)
 {
 	GPIO_InitTypeDef GPIO_Init;
 
@@ -568,23 +569,23 @@ void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode,
 	uint8_t temp, t1, t;
 	uint16_t y0 = y;
 	uint8_t csize = 0;
-	uint8_t *pfont = 0;
+	uint8_t* pfont = 0;
 	csize = (size / 8 + ((size % 8) ? 1 : 0)) * (size / 2);
 
 	chr = chr - ' '; /*得到偏移后值(ASCII字库是从空格开始取模的)*/
 	switch (size)
 	{
 	case 12:
-		pfont = (uint8_t *)asc2_1206[chr];
+		pfont = (uint8_t*)asc2_1206[chr];
 		break;
 	case 16:
-		pfont = (uint8_t *)asc2_1608[chr];
+		pfont = (uint8_t*)asc2_1608[chr];
 		break;
 	case 24:
-		pfont = (uint8_t *)asc2_2412[chr];
+		pfont = (uint8_t*)asc2_2412[chr];
 		break;
 	case 32:
-		pfont = (uint8_t *)asc2_3216[chr];
+		pfont = (uint8_t*)asc2_3216[chr];
 		break;
 	default:
 		return;
@@ -719,7 +720,7 @@ void lcd_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t si
  * @retval  无
  *
  */
-void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char *p, uint16_t color)
+void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char* p, uint16_t color)
 {
 	uint8_t x0 = x;
 	width += x;
