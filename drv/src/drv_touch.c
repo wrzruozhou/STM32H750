@@ -31,7 +31,7 @@ uint8_t tp_init(void)
 }
 
 /*10个触控点的颜色(电容屏用)*/
-const uint16_t POINT_COLOR_TBL[10] = {RED, GREEN, BLUE, BROWN, YELLOW, MAGENTA, CYAN, LIGHTBLUE, BRRED, GRAY};
+const uint16_t POINT_COLOR_TBL[10] = { RED, GREEN, BLUE, BROWN, YELLOW, MAGENTA, CYAN, LIGHTBLUE, BRRED, GRAY };
 /**
  * @brief   电容触摸屏测试函数
  * @param   无
@@ -74,6 +74,9 @@ void ctp_test(void)
 				lastpos[t][0] = 0xffff;
 			}
 		}
+#if FREE_RTOS
+		vTaskDelay(10);
+#else
 		delay_ms(10);
 		i++;
 		if (i % 20 == 0)
@@ -82,5 +85,7 @@ void ctp_test(void)
 			HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
 			HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
 		}
+#endif
+
 	}
 }

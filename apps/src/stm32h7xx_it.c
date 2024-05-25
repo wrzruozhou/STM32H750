@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file    Templates/Src/stm32h7xx_it.c 
+  * @file    Templates/Src/stm32h7xx_it.c
   * @author  MCD Application Team
   * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and 
+  *          This file provides template for all exceptions handler and
   *          peripherals interrupt service routine.
   ******************************************************************************
   * @attention
@@ -18,34 +18,36 @@
   ******************************************************************************
   */
 
-/* Includes ------------------------------------------------------------------*/
+  /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_it.h"
 #include "main.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 /** @addtogroup STM32H7xx_HAL_Examples
   * @{
   */
 
-/** @addtogroup Templates
-  * @{
-  */
+  /** @addtogroup Templates
+    * @{
+    */
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+    /* Private typedef -----------------------------------------------------------*/
+    /* Private define ------------------------------------------------------------*/
+    /* Private macro -------------------------------------------------------------*/
+    /* Private variables ---------------------------------------------------------*/
+    /* Private function prototypes -----------------------------------------------*/
+    /* Private functions ---------------------------------------------------------*/
 
-/******************************************************************************/
-/*            Cortex-M7 Processor Exceptions Handlers                         */
-/******************************************************************************/
+    /******************************************************************************/
+    /*            Cortex-M7 Processor Exceptions Handlers                         */
+    /******************************************************************************/
 
-/**
-  * @brief   This function handles NMI exception.
-  * @param  None
-  * @retval None
-  */
+    /**
+      * @brief   This function handles NMI exception.
+      * @param  None
+      * @retval None
+      */
 void NMI_Handler(void)
 {
 }
@@ -104,6 +106,7 @@ void UsageFault_Handler(void)
   }
 }
 
+#if 0
 /**
   * @brief  This function handles SVCall exception.
   * @param  None
@@ -112,6 +115,7 @@ void UsageFault_Handler(void)
 void SVC_Handler(void)
 {
 }
+#endif
 
 /**
   * @brief  This function handles Debug Monitor exception.
@@ -122,6 +126,7 @@ void DebugMon_Handler(void)
 {
 }
 
+#if 0
 /**
   * @brief  This function handles PendSVC exception.
   * @param  None
@@ -130,18 +135,24 @@ void DebugMon_Handler(void)
 void PendSV_Handler(void)
 {
 }
+#endif
+
 
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
+extern void xPortSysTickHandler(void);
 void SysTick_Handler(void)
 {
   HAL_IncTick();
-	
+  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
+  {
+    xPortSysTickHandler();
+  }
 }
-  
+
 
 /******************************************************************************/
 /*                 STM32H7xx Peripherals Interrupt Handlers                   */
@@ -155,16 +166,16 @@ void SysTick_Handler(void)
   * @param  None
   * @retval None
   */
-/*void PPP_IRQHandler(void)
-{
-}*/
+  /*void PPP_IRQHandler(void)
+  {
+  }*/
 
 
-/**
-  * @}
-  */ 
+  /**
+    * @}
+    */
 
-/**
-  * @}
-  */
+    /**
+      * @}
+      */
 

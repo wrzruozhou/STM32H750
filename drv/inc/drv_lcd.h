@@ -5,6 +5,8 @@
 #include "drv_delay.h"
 #include "drv_usart.h"
 
+#include "alltask.h"
+
 /* RESET和系统复位脚共用 所以这里不用定义RESET引脚 */
 //#define LCD_RST_GPIO_PORT GPIOX
 //#define LCD_RST_GPIO_PIN

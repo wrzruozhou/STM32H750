@@ -2,6 +2,7 @@
 #include "./USMART/usmart_str.h"
 #include "drv_at24cxx.h"
 #include "drv_lcd.h"
+#include "drv_beep.h"
 
 /******************************************************************************************/
 /* 用户配置区
@@ -35,6 +36,8 @@ struct _m_usmart_nametab usmart_nametab[] =
     (void*)lcd_show_num, "void lcd_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint16_t color)",
     (void*)lcd_show_xnum, "void lcd_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint8_t mode, uint16_t color)",
     (void*)lcd_show_string, "void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char* p, uint16_t color)",
+    (void*)BEEP_SETPWM,"void BEEP_SETPWM(uint16_t ccr, uint8_t dtg)",
+    (void*)BEEP_SETPSC,"void BEEP_SETPSC(uint16_t psc)"
 };
 /******************************************************************************************/
 
