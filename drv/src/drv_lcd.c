@@ -97,6 +97,47 @@ void lcd_scan_dir(uint8_t dir)
     uint16_t dirreg = 0;
     uint16_t temp;
 
+	/* 横屏时，对1963不改变扫描方向，其他IC改变扫描方向！竖屏时1963改变方向 */
+	if ((lcddev.dir == 1 && lcddev.id != 0x1963) || (lcddev.dir == 0 && lcddev.id == 0x1963))
+	{
+		switch (dir)		/*方向转换*/
+		{
+		case 0:
+			dir = 6;
+			break;
+
+		case 1:
+			dir = 7;
+			break;
+
+		case 2:
+			dir = 4;
+			break;
+
+		case 3:
+			dir = 5;
+			break;
+
+		case 4:
+			dir = 0;
+			break;
+
+		case 5:
+			dir = 3;
+			break;
+
+		case 6:
+			dir = 3;
+			break;
+
+		case 7:
+			dir = 2;
+			break;
+
+		default:
+			break;
+		}
+	}
     switch (dir)
     {
     case L2R_U2D:
@@ -172,6 +213,8 @@ void lcd_display_dir(uint8_t dir)
     lcddev.dir = dir;
     if (dir == 0)
     {      /*竖屏*/
+			lcddev.width = 800;
+        lcddev.height = 480;
         if (lcddev.id == 0x5510)
         {
             lcddev.wramcmd = 0x2c00;
@@ -180,6 +223,7 @@ void lcd_display_dir(uint8_t dir)
             lcddev.width = 480;
             lcddev.height = 800;
         }
+			}
         else {
             lcddev.wramcmd = 0x2c00;
             lcddev.setxcmd = 0x2a00;
@@ -187,7 +231,6 @@ void lcd_display_dir(uint8_t dir)
             lcddev.width = 800;
             lcddev.height = 480;
         }
-    }
     lcd_scan_dir(DFT_SCAN_DIR);
 }
 
@@ -334,9 +377,9 @@ void lcd_init(void)
     Write_Timing.DataSetupTime = 2;
     FMC_NORSRAM_Extended_Timing_Init(hsram_lcd.Extended, &Write_Timing, hsram_lcd.Init.NSBank, hsram_lcd.Init.ExtendedMode);
 
-    lcd_display_dir(0);
+    lcd_display_dir(1);
     LCD_BL(1);
-    lcd_clear(RED);
+    lcd_clear(WHITE);
 }
 
 void HAL_SRAM_MspInit(SRAM_HandleTypeDef* hsram)

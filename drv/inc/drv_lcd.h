@@ -135,6 +135,7 @@ typedef struct
 
 void lcd_init(void);
 //void lcd_wr_regno(uint16_t regno);
+void lcd_display_dir(uint8_t dir);
 
 void lcd_clear(uint16_t color);
 void lcd_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint32_t color);
