@@ -91,7 +91,7 @@ void TIM1_CC_IRQHandler(void)
     HAL_TIM_IRQHandler(&htim1_remote);
 
 }
-
+#if 0
 /**
  * @brief   定时器更新中断回调函数
  * @param   htim:定时器句柄
@@ -176,7 +176,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim)
         }
     }
 }
-
+#endif
 /**
  * @brief   处理红外按键
  * @param   无
@@ -210,3 +210,111 @@ uint8_t remote_scan(void)
     }
     return sta;
 }
+
+
+#if 0
+/*main函数中测试用的功能*/
+key = remote_scan();
+if (key)
+{
+    switch (key)
+    {
+    case 0:
+        str = "ERROR";
+        break;
+
+    case 69:
+        str = "POWER";
+        break;
+
+    case 70:
+        str = "UP";
+        break;
+
+    case 64:
+        str = "PLAY";
+        break;
+
+    case 71:
+        str = "ALIENTEK";
+        break;
+
+    case 67:
+        str = "RIGHT";
+        break;
+
+    case 68:
+        str = "LEFT";
+        break;
+
+    case 7:
+        str = "VOL-";
+        break;
+
+    case 21:
+        str = "DOWN";
+        break;
+
+    case 9:
+        str = "VOL+";
+        break;
+
+    case 22:
+        str = "1";
+        break;
+
+    case 25:
+        str = "2";
+        break;
+
+    case 13:
+        str = "3";
+        break;
+
+    case 12:
+        str = "4";
+        break;
+
+    case 24:
+        str = "5";
+        break;
+
+    case 94:
+        str = "6";
+        break;
+
+    case 8:
+        str = "7";
+        break;
+
+    case 28:
+        str = "8";
+        break;
+
+    case 90:
+        str = "9";
+        break;
+
+    case 66:
+        str = "0";
+        break;
+
+    case 74:
+        str = "DELETE";
+        break;
+    }/* ÏÔÊ¾SYMBOL */
+    printf("%s\n", str);
+}
+
+t++;
+if (t > 20)
+{
+    t = 0;
+    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+    HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
+    HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
+}
+delay_ms(1000);
+norflash_ex_read(datatemp, flashsize - 100, TEXT_SIZE);
+#endif
+

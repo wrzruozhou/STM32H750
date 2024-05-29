@@ -94,49 +94,227 @@ void lcd_set_cursor(uint16_t x, uint16_t y)
 /*设置扫描方向*/
 void lcd_scan_dir(uint8_t dir)
 {
+	// uint16_t regval = 0;
+	// uint16_t dirreg = 0;
+	// uint16_t temp;
+	// /* 横屏时，对1963不改变扫描方向，其他IC改变扫描方向！竖屏时1963改变方向 */
+	// if ((lcddev.dir == 1 && lcddev.id != 0x1963) || (lcddev.dir == 0 && lcddev.id == 0x1963))
+	// {
+	// 	switch (dir)		/*方向转换*/
+	// 	{
+	// 	case 0:
+	// 		dir = 6;
+	// 		break;
+
+	// 	case 1:
+	// 		dir = 7;
+	// 		break;
+
+	// 	case 2:
+	// 		dir = 4;
+	// 		break;
+
+	// 	case 3:
+	// 		dir = 5;
+	// 		break;
+
+	// 	case 4:
+	// 		dir = 0;
+	// 		break;
+
+	// 	case 5:
+	// 		dir = 3;
+	// 		break;
+
+	// 	case 6:
+	// 		dir = 3;
+	// 		break;
+
+	// 	case 7:
+	// 		dir = 2;
+	// 		break;
+
+	// 	default:
+	// 		break;
+	// 	}
+	// }
+
+	// switch (dir)
+	// {
+	// case L2R_U2D:
+	// 	regval |= (0 << 7) | (0 << 6) | (0 << 5);
+	// 	break;
+	// case L2R_D2U:
+	// 	regval |= (1 << 7) | (0 << 6) | (0 << 5);
+	// 	break;
+	// case R2L_U2D:
+	// 	regval |= (0 << 7) | (1 << 6) | (0 << 5);
+	// 	break;
+	// case R2L_D2U:
+	// 	regval |= (1 << 7) | (1 << 6) | (0 << 5);
+	// 	break;
+	// case U2D_L2R:
+	// 	regval |= (0 << 7) | (0 << 6) | (1 << 5);
+	// 	break;
+	// case U2D_R2L:
+	// 	regval |= (0 << 7) | (1 << 6) | (1 << 5);
+	// 	break;
+	// case D2U_L2R:
+	// 	regval |= (1 << 7) | (0 << 6) | (1 << 5);
+	// 	break;
+	// case D2U_R2L:
+	// 	regval |= (1 << 7) | (1 << 6) | (1 << 5);
+	// 	break;
+	// default:
+	// 	break;
+	// }
+
+	// dirreg = 0x36; /*对于绝大部分驱动IC，由0x36寄存器控制*/
+	// if (lcddev.id == 0x5510)
+	// {
+	// 	dirreg = 0x3600; /*对于5510，和其他驱动IC的寄存器有差异*/
+	// }
+
+	// lcd_write_reg(dirreg, regval);
+	// /*设置显示区域*/
+	// if (lcddev.id == 0x5510)
+	// {
+	// 	lcd_wr_regno(lcddev.setxcmd);
+	// 	lcd_wr_data(0);
+	// 	lcd_wr_regno(lcddev.setxcmd + 1);
+	// 	lcd_wr_data(0);
+	// 	lcd_wr_regno(lcddev.setxcmd + 2);
+	// 	lcd_wr_data((lcddev.width - 1) >> 8);
+	// 	lcd_wr_regno(lcddev.setxcmd + 3);
+	// 	lcd_wr_data((lcddev.width - 1) | 0xff);
+
+	// 	lcd_wr_regno(lcddev.setycmd);
+	// 	lcd_wr_data(0);
+	// 	lcd_wr_regno(lcddev.setycmd + 1);
+	// 	lcd_wr_data(0);
+	// 	lcd_wr_regno(lcddev.setycmd + 2);
+	// 	lcd_wr_data((lcddev.height - 1) >> 8);
+	// 	lcd_wr_regno(lcddev.setycmd + 3);
+	// 	lcd_wr_data((lcddev.height - 1) | 0xff);
+	// }
 	uint16_t regval = 0;
 	uint16_t dirreg = 0;
 	uint16_t temp;
 
+	/* ºáÆÁÊ±£¬¶Ô1963²»¸Ä±äÉ¨Ãè·½Ïò, ÆäËûIC¸Ä±äÉ¨Ãè·½Ïò£¡ÊúÆÁÊ±1963¸Ä±ä·½Ïò, ÆäËûIC²»¸Ä±äÉ¨Ãè·½Ïò */
+	if ((lcddev.dir == 1 && lcddev.id != 0X1963) || (lcddev.dir == 0 && lcddev.id == 0X1963))
+	{
+		switch (dir)   /* ·½Ïò×ª»» */
+		{
+		case 0:
+			dir = 6;
+			break;
+
+		case 1:
+			dir = 7;
+			break;
+
+		case 2:
+			dir = 4;
+			break;
+
+		case 3:
+			dir = 5;
+			break;
+
+		case 4:
+			dir = 1;
+			break;
+
+		case 5:
+			dir = 0;
+			break;
+
+		case 6:
+			dir = 3;
+			break;
+
+		case 7:
+			dir = 2;
+			break;
+		}
+	}
+
+	/* ¸ù¾ÝÉ¨Ãè·½Ê½ ÉèÖÃ 0X36/0X3600 ¼Ä´æÆ÷ bit 5,6,7 Î»µÄÖµ */
 	switch (dir)
 	{
-	case L2R_U2D:
+	case L2R_U2D:/* ´Ó×óµ½ÓÒ,´ÓÉÏµ½ÏÂ */
 		regval |= (0 << 7) | (0 << 6) | (0 << 5);
 		break;
-	case L2R_D2U:
+
+	case L2R_D2U:/* ´Ó×óµ½ÓÒ,´ÓÏÂµ½ÉÏ */
 		regval |= (1 << 7) | (0 << 6) | (0 << 5);
 		break;
-	case R2L_U2D:
+
+	case R2L_U2D:/* ´ÓÓÒµ½×ó,´ÓÉÏµ½ÏÂ */
 		regval |= (0 << 7) | (1 << 6) | (0 << 5);
 		break;
-	case R2L_D2U:
+
+	case R2L_D2U:/* ´ÓÓÒµ½×ó,´ÓÏÂµ½ÉÏ */
 		regval |= (1 << 7) | (1 << 6) | (0 << 5);
 		break;
-	case U2D_L2R:
+
+	case U2D_L2R:/* ´ÓÉÏµ½ÏÂ,´Ó×óµ½ÓÒ */
 		regval |= (0 << 7) | (0 << 6) | (1 << 5);
 		break;
-	case U2D_R2L:
+
+	case U2D_R2L:/* ´ÓÉÏµ½ÏÂ,´ÓÓÒµ½×ó */
 		regval |= (0 << 7) | (1 << 6) | (1 << 5);
 		break;
-	case D2U_L2R:
+
+	case D2U_L2R:/* ´ÓÏÂµ½ÉÏ,´Ó×óµ½ÓÒ */
 		regval |= (1 << 7) | (0 << 6) | (1 << 5);
 		break;
-	case D2U_R2L:
+
+	case D2U_R2L:/* ´ÓÏÂµ½ÉÏ,´ÓÓÒµ½×ó */
 		regval |= (1 << 7) | (1 << 6) | (1 << 5);
-		break;
-	default:
 		break;
 	}
 
-	dirreg = 0x36; /*对于绝大部分驱动IC，由0x36寄存器控制*/
-	if (lcddev.id == 0x5510)
+	dirreg = 0X36;  /* ¶Ô¾ø´ó²¿·ÖÇý¶¯IC, ÓÉ0X36¼Ä´æÆ÷¿ØÖÆ */
+
+	if (lcddev.id == 0X5510)
 	{
-		dirreg = 0x3600; /*对于5510，和其他驱动IC的寄存器有差异*/
+		dirreg = 0X3600;    /* ¶ÔÓÚ5510, ºÍÆäËûÇý¶¯icµÄ¼Ä´æÆ÷ÓÐ²îÒì */
+	}
+
+	/* 9341 & 7789 & 7796 ÒªÉèÖÃBGRÎ» */
+	if (lcddev.id == 0X9341 || lcddev.id == 0X7789 || lcddev.id == 0x7796)
+	{
+		regval |= 0X08;
 	}
 
 	lcd_write_reg(dirreg, regval);
-	/*设置显示区域*/
-	if (lcddev.id == 0x5510)
+
+	if (lcddev.id != 0X1963)   /* 1963²»×ö×ø±ê´¦Àí */
+	{
+		if (regval & 0X20)
+		{
+			if (lcddev.width < lcddev.height)   /* ½»»»X,Y */
+			{
+				temp = lcddev.width;
+				lcddev.width = lcddev.height;
+				lcddev.height = temp;
+			}
+		}
+		else
+		{
+			if (lcddev.width > lcddev.height)   /* ½»»»X,Y */
+			{
+				temp = lcddev.width;
+				lcddev.width = lcddev.height;
+				lcddev.height = temp;
+			}
+		}
+	}
+
+	/* ÉèÖÃÏÔÊ¾ÇøÓò(¿ª´°)´óÐ¡ */
+	if (lcddev.id == 0X5510)
 	{
 		lcd_wr_regno(lcddev.setxcmd);
 		lcd_wr_data(0);
@@ -145,8 +323,7 @@ void lcd_scan_dir(uint8_t dir)
 		lcd_wr_regno(lcddev.setxcmd + 2);
 		lcd_wr_data((lcddev.width - 1) >> 8);
 		lcd_wr_regno(lcddev.setxcmd + 3);
-		lcd_wr_data((lcddev.width - 1) | 0xff);
-
+		lcd_wr_data((lcddev.width - 1) & 0XFF);
 		lcd_wr_regno(lcddev.setycmd);
 		lcd_wr_data(0);
 		lcd_wr_regno(lcddev.setycmd + 1);
@@ -154,7 +331,20 @@ void lcd_scan_dir(uint8_t dir)
 		lcd_wr_regno(lcddev.setycmd + 2);
 		lcd_wr_data((lcddev.height - 1) >> 8);
 		lcd_wr_regno(lcddev.setycmd + 3);
-		lcd_wr_data((lcddev.height - 1) | 0xff);
+		lcd_wr_data((lcddev.height - 1) & 0XFF);
+	}
+	else
+	{
+		lcd_wr_regno(lcddev.setxcmd);
+		lcd_wr_data(0);
+		lcd_wr_data(0);
+		lcd_wr_data((lcddev.width - 1) >> 8);
+		lcd_wr_data((lcddev.width - 1) & 0XFF);
+		lcd_wr_regno(lcddev.setycmd);
+		lcd_wr_data(0);
+		lcd_wr_data(0);
+		lcd_wr_data((lcddev.height - 1) >> 8);
+		lcd_wr_data((lcddev.height - 1) & 0XFF);
 	}
 }
 
@@ -172,22 +362,19 @@ void lcd_display_dir(uint8_t dir)
 	lcddev.dir = dir;
 	if (dir == 0)
 	{ /*竖屏*/
-		if (lcddev.id == 0x5510)
-		{
-			lcddev.wramcmd = 0x2c00;
-			lcddev.setxcmd = 0x2a00;
-			lcddev.setycmd = 0x2b00;
-			lcddev.width = 480;
-			lcddev.height = 800;
-		}
-		else
-		{
-			lcddev.wramcmd = 0x2c00;
-			lcddev.setxcmd = 0x2a00;
-			lcddev.setycmd = 0x2b00;
-			lcddev.width = 800;
-			lcddev.height = 480;
-		}
+		lcddev.wramcmd = 0x2c00;
+		lcddev.setxcmd = 0x2a00;
+		lcddev.setycmd = 0x2b00;
+		lcddev.width = 480;
+		lcddev.height = 800;
+	}
+	else
+	{
+		lcddev.wramcmd = 0x2c00;
+		lcddev.setxcmd = 0x2a00;
+		lcddev.setycmd = 0x2b00;
+		lcddev.width = 800;
+		lcddev.height = 480;
 	}
 	lcd_scan_dir(DFT_SCAN_DIR);
 }
@@ -339,7 +526,7 @@ void lcd_init(void)
 
 	lcd_display_dir(0);
 	LCD_BL(1);
-	lcd_clear(RED);
+	lcd_clear(WHITE);
 }
 
 void HAL_SRAM_MspInit(SRAM_HandleTypeDef* hsram)
@@ -381,6 +568,30 @@ void lcd_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint32_t color
 		for (j = sx; j < xlen; j++)
 		{
 			LCD->LCD_RAM = color;
+		}
+	}
+}
+
+/**
+ * @brief	在指定区域填充指定颜色块
+ * @param	(sx,sy),(ex,ey):填充矩形对角坐标，区域大小为:(ex-sx+1)*(ey-sy+1)
+ * @param	color:要填充的颜色数组首地址
+ * @retval	无
+*/
+void lcd_color_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t* color)
+{
+	uint16_t height, width;
+	uint16_t i, j;
+	width = ex - sx + 1;		/*得到填充的宽度*/
+	height = ey - sy + 1;		/*高度*/
+
+	for (i = 0; i < height; i++)
+	{
+		lcd_set_cursor(sx, sy + i);		/*设置光标位置*/
+		lcd_write_ram_prepare();				/*开始写入GRAM*/
+		for (j = 0; j < width; j++)
+		{
+			LCD->LCD_RAM = color[i * width + j];	/*写入数据*/
 		}
 	}
 }

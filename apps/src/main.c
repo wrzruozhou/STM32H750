@@ -1,4 +1,13 @@
 #include "main.h"
+#include "lvgl.h"
+#include "lv_port_indev_template.h"
+#include "lv_port_disp_template.h"
+
+#include "lv_demo_music.h"
+#include "lv_demo_stress.h"
+#include "lv_demo_widgets.h"
+#include "lv_demo_keypad_encoder.h"
+#include "lv_demo_benchmark.h"
 
 static void MPU_Config(void);
 uint32_t sysclock = 0;
@@ -9,20 +18,12 @@ uint8_t mpudata[128] __attribute__((at(0X20002000)));
 uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
 #endif
 
-/*这里是测试FLASH的*/
-const uint8_t g_text_buf[] = { "zhong yu zuo le zhe ge jue ding" };
-#define TEXT_SIZE sizeof(g_text_buf)
 
-char temp_read[128];
-uint16_t id = 0;
 int main(void)
 {
-  int i;
-  uint8_t t = 0;
+
   char* str = 0;
   uint8_t key = 0;
-  uint32_t flashsize;
-  uint8_t datatemp[TEXT_SIZE];
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable(); /* 打开L1-Cache */
@@ -32,127 +33,28 @@ int main(void)
   sys_stm32_clock_init(240, 2, 2, 4);
   sysclock = HAL_RCC_GetSysClockFreq();
   mpu_memory_protection();
-  LED_Config();
+  //LED_Config();
   usart_init(115200);
-  usmart_dev.init(240);
+  //usmart_dev.init(240);
   // Key_Init();
   //remote_init();
-  at24cxx_init();
-  lcd_init();
-  tp_dev.init();
-  load_draw_dialog();
+  //at24cxx_init();
+
+  BaseTim_init(10 - 1, 24000 - 1);
+  lv_init();    /*系统初始化*/
+  lv_port_disp_init();
+  lv_port_indev_init();
+
+  //lv_demo_music();
+  //lv_demo_stress();
+	//lv_demo_widgets();
+	//lv_demo_keypad_encoder();
+	lv_demo_benchmark();
 
 
-  id = norflash_ex_read_id();
-  printf("the flash id is %x\n", id);
-  // ctp_test();
-  flashsize = 16 * 1024 * 1024;
-  sprintf((char*)datatemp, "%s%d", (char*)g_text_buf, i);
-  norflash_ex_write((uint8_t*)datatemp, flashsize - 100, TEXT_SIZE);
   while (1)
   {
-    key = remote_scan();
-    if (key)
-    {
-      switch (key)
-      {
-      case 0:
-        str = "ERROR";
-        break;
-
-      case 69:
-        str = "POWER";
-        break;
-
-      case 70:
-        str = "UP";
-        break;
-
-      case 64:
-        str = "PLAY";
-        break;
-
-      case 71:
-        str = "ALIENTEK";
-        break;
-
-      case 67:
-        str = "RIGHT";
-        break;
-
-      case 68:
-        str = "LEFT";
-        break;
-
-      case 7:
-        str = "VOL-";
-        break;
-
-      case 21:
-        str = "DOWN";
-        break;
-
-      case 9:
-        str = "VOL+";
-        break;
-
-      case 22:
-        str = "1";
-        break;
-
-      case 25:
-        str = "2";
-        break;
-
-      case 13:
-        str = "3";
-        break;
-
-      case 12:
-        str = "4";
-        break;
-
-      case 24:
-        str = "5";
-        break;
-
-      case 94:
-        str = "6";
-        break;
-
-      case 8:
-        str = "7";
-        break;
-
-      case 28:
-        str = "8";
-        break;
-
-      case 90:
-        str = "9";
-        break;
-
-      case 66:
-        str = "0";
-        break;
-
-      case 74:
-        str = "DELETE";
-        break;
-      }/* ÏÔÊ¾SYMBOL */
-      printf("%s\n", str);
-    }
-
-    t++;
-    if (t > 20)
-    {
-      t = 0;
-      HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
-      HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
-      HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_GPIO_PIN);
-    }
-    delay_ms(1000);
-    norflash_ex_read(datatemp, flashsize - 100, TEXT_SIZE);
+    lv_timer_handler(); /* LVGL 管理函数相当于 RTOS 触发任务调度函数 */
   }
 }
 
