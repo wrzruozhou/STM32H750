@@ -91,7 +91,6 @@ uint8_t gt9xxx_init(void)
 	GPIO_Init.Pull = GPIO_PULLUP;
 	GPIO_Init.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(GT9XXX_RST_GPIO_PORT, &GPIO_Init);
-	;
 
 	GPIO_Init.Mode = GPIO_MODE_INPUT;
 	GPIO_Init.Pin = GT9XXX_INT_GPIO_PIN;
