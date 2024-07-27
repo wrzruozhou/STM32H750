@@ -488,6 +488,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv\src\drv_norflash_ex.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_step.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_step.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
