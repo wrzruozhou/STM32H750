@@ -21,6 +21,7 @@
 #include "drv_gt911.h"
 #include "drv_touch.h"
 #include "drv_norflash_ex.h"
+#include "drv_step.h"
 
 #endif /* __MAIN_H */
 
