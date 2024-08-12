@@ -138,6 +138,10 @@ typedef struct
 void lcd_init(void);
 //void lcd_wr_regno(uint16_t regno);
 
+void lcd_scan_dir(uint8_t dir);
+void lcd_write_ram_prepare(void);
+void lcd_wr_data(uint16_t data);
+void lcd_set_window(uint16_t sx, uint16_t sy, uint16_t width, uint16_t height);
 void lcd_clear(uint16_t color);
 void lcd_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint32_t color);
 void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
@@ -150,6 +154,8 @@ void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode,
 void lcd_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint16_t color);
 void lcd_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint8_t mode, uint16_t color);
 void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char* p, uint16_t color);
+void lcd_display_dir(uint8_t dir);
+void lcd_color_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t* color);
 
 void load_draw_dialog(void);
 void lcd_draw_bline(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t size, uint16_t color);

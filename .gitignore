@@ -9,3 +9,4 @@ project/*.Administrator*
 Administrator
 project/.vscode
 project/EventRecorderStub.scvd
+project/JLinkLog.txt

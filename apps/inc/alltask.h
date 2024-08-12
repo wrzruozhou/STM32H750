@@ -26,6 +26,16 @@
 #include "drv_norflash_ex.h"
 #include "drv_beep.h"
 
+#include "lvgl.h"
+#include "lv_port_disp_template.h"
+#include "lv_port_indev_template.h"
+
+#include "lv_demo_music.h"
+#include "lv_demo_benchmark.h"
+#include "lv_demo_keypad_encoder.h"
+#include "lv_demo_stress.h"
+#include "lv_demo_widgets.h"
+
 #define FREE_RTOS 1
 
 void task1(void* pvParameters);

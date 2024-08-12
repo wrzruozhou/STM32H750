@@ -3,6 +3,7 @@
 
 #include "stm32h7xx_hal.h"
 #include "stdio.h"
+#include "lvgl.h"
 
 #define RDATA HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_8)
 #define REMOTE_ID 0

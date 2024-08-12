@@ -35,7 +35,7 @@ void beep_task(void* pvParameters)
 TaskHandle_t LCD_handle;
 void LCD_Task(void* pvParameters)
 {
-
+    lcd_init();                   /*LCD初始化*/
     while (1)
     {
     }
@@ -155,6 +155,26 @@ void Remote_Task(void* pvParameters)
     }
 }
 
+TaskHandle_t LV_DEMO_MUSIC_Handle;
+void lv_demo_Task(void* pvParameters)
+{
+
+    lv_init();                      /*LVGL初始化*/
+    lv_port_disp_init();            /*显示接口初始化*/
+    lv_port_indev_init();           /*输入接口初始化*/
+
+    // lv_demo_music();                /*官方例程*/
+    // lv_demo_benchmark();
+    // lv_demo_keypad_encoder();
+    //lv_demo_stress();                   /*这个任务和remote_task冲突，目前不知道原因*/
+    lv_demo_widgets();
+    while (1)
+    {
+        lv_timer_handler();         /*lvgl计时器*/
+        vTaskDelay(5);
+    }
+}
+
 /**
  * @brief   所有任务
  * @param   无
@@ -162,10 +182,12 @@ void Remote_Task(void* pvParameters)
 */
 inline void All_TaskStart(void)
 {
+
     xTaskCreate(task1, "task1", 128, NULL, 2, &task1_handle);
-    xTaskCreate(beep_task, "beep_task", 128, NULL, 2, &beep_handle);
-    xTaskCreate(LCD_Task, "LCD_Task", 128, NULL, 2, &LCD_handle);
-    xTaskCreate(Touch_Task, "Touch_Task", 128, NULL, 2, &Touch_handle);
+    // xTaskCreate(beep_task, "beep_task", 128, NULL, 2, &beep_handle);
+    // xTaskCreate(LCD_Task, "LCD_Task", 128, NULL, 2, &LCD_handle);
+    // xTaskCreate(Touch_Task, "Touch_Task", 128, NULL, 2, &Touch_handle);
     xTaskCreate(Remote_Task, "Remote_Task", 128, NULL, 2, &Remote_handle);
+    xTaskCreate(lv_demo_Task, "lv_demo_Task", 1024, NULL, 3, &LV_DEMO_MUSIC_Handle);
 }
 

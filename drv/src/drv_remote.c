@@ -119,6 +119,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
             }
         }
     }
+
 }
 
 /**
@@ -175,6 +176,14 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim)
             g_remote_sta &= ~(1 << 4);
         }
     }
+
+    if (htim->Instance == TIM6)
+    {
+        /* code */
+        // lv_tick_inc(1);
+    }
+
+
 }
 
 /**

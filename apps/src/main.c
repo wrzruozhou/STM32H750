@@ -36,11 +36,8 @@ int main(void)
   usart_init(115200);
   usmart_dev.init(240);
 
-  BEEP_PWM_Init(920, 1000);    /*频率261*/
-  BEEP_SETPWM(300, 100);      /*占空比为30%  死区时间是100 * Ttds*/
-
-  lcd_init();                   /*LCD初始化*/
-
+  // BEEP_PWM_Init(920, 1000);    /*频率261*/
+  // BEEP_SETPWM(300, 100);      /*占空比为30%  死区时间是100 * Ttds*/
 
   // Key_Init();
 
