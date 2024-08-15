@@ -403,6 +403,11 @@
               <FileType>5</FileType>
               <FilePath>..\apps\inc\stm32h7xx_hal_conf.h</FilePath>
             </File>
+            <File>
+              <FileName>drv_btim3_1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_btim3_1.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -442,6 +447,16 @@
               <FileName>drv_lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\drv\src\drv_lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_julia.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_julia.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_btim3_1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_btim3_1.c</FilePath>
             </File>
           </Files>
         </Group>
