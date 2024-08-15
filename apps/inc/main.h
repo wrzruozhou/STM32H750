@@ -14,6 +14,8 @@
 #include "drv_mpu.h"
 #include "drv_lcd.h"
 #include "USMART/usmart.h"
+#include "drv_julia.h"
+#include "drv_btim3_1.h"
 
 #endif /* __MAIN_H */
 

@@ -2,6 +2,7 @@
 
 static void MPU_Config(void);
 uint32_t sysclock = 0;
+uint8_t g_timeout;
 
 #if !(__ARMCC_VERSION >= 6010050)
 uint8_t mpudata[128] __attribute__((at(0X20002000)));
