@@ -96,9 +96,10 @@ void lcd_scan_dir(uint8_t dir)
     uint16_t regval = 0;
     uint16_t dirreg = 0;
     uint16_t temp;
-    if ((lcddev.dir == 1 && lcddev.id != 0X1963) || (lcddev.dir == 0 && lcddev.id == 0X1963))
+    /* 横屏时，对1963不改变扫描方向，其他IC改变扫描方向！竖屏时1963改变方向 */
+    if ((lcddev.dir == 1 && lcddev.id != 0x1963) || (lcddev.dir == 0 && lcddev.id == 0x1963))
     {
-        switch (dir)   /* ����ת�� */
+        switch (dir)		/*方向转换*/
         {
         case 0:
             dir = 6;
@@ -117,11 +118,11 @@ void lcd_scan_dir(uint8_t dir)
             break;
 
         case 4:
-            dir = 1;
+            dir = 0;
             break;
 
         case 5:
-            dir = 0;
+            dir = 3;
             break;
 
         case 6:
@@ -130,6 +131,9 @@ void lcd_scan_dir(uint8_t dir)
 
         case 7:
             dir = 2;
+            break;
+
+        default:
             break;
         }
     }
@@ -369,7 +373,9 @@ void lcd_init(void)
     FMC_NORSRAM_Extended_Timing_Init(hsram_lcd.Extended, &Write_Timing, hsram_lcd.Init.NSBank, hsram_lcd.Init.ExtendedMode);
 
     lcd_display_dir(1);
+    lcd_display_dir(1);
     LCD_BL(1);
+    lcd_clear(WHITE);
     lcd_clear(WHITE);
 }
 

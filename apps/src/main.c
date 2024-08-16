@@ -26,8 +26,6 @@ int main(void)
   usmart_dev.init(240);
 
   mpu_memory_protection();
-  Key_Init();
-  mpu_memory_protection();
   lcd_init();
 
   // lcd_fill(100, 100, 300, 200, WHITE);
@@ -37,41 +35,14 @@ int main(void)
   // lcd_draw_rectangle(250, 200, 450, 600, WHITE);
   // lcd_draw_circle(300, 50, 30, BLUE);
   // lcd_fill_circle(150, 200, 100, GREEN);
-  lcd_show_char(100, 200, '%', 32, 1, YELLOW);
-  lcd_show_num(100, 300, 550, 3, 32, GREEN);
-  lcd_show_xnum(100, 350, 100, 3, 24, 1, GREEN);
-  lcd_show_string(20, 600, 100, 100, 12, "xihaiqingge", GREEN);
+  lcd_show_char(100, 200, '%', 32, 1, RED);
+  lcd_show_num(100, 300, 550, 3, 32, RED);
+  lcd_show_xnum(100, 350, 100, 3, 24, 1, RED);
+  lcd_show_string(20, 200, 100, 100, 12, "xihaiqingge", RED);
   while (1)
   {
+	}
 
-    i = key_scan();
-    if (i == WKUP_PRES)
-    {
-      mpu_set_protection(0X20002000, MPU_REGION_SIZE_128B,
-        MPU_REGION_NUMBER0, MPU_INSTRUCTION_ACCESS_ENABLE,
-        MPU_REGION_PRIV_RO_URO, MPU_ACCESS_NOT_SHAREABLE,
-        MPU_ACCESS_NOT_CACHEABLE,
-        MPU_ACCESS_BUFFERABLE); /* 只读,禁止共用,禁止 catch,允许缓冲 */
-      printf("MPU open!\r\n"); /* 提示 MPU 打开 */
-    }
-    else if (i == KEY0_PRES)
-    {
-      printf("Start Writing data...\r\n");
-      sprintf((char*)mpudata, "MPU test array %d", t);
-      printf("Data Write finshed!\r\n");
-    }
-    else if (i == KEY1_PRES)
-    {
-      printf("Array data is:%s\r\n", mpudata);
-    }
-    else
-    {
-      delay_ms(10);
-    }
-    t++;
-    if ((t % 50) == 0)
-      HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
-  }
 }
 
 
