@@ -370,7 +370,7 @@ void lcd_init(void)
 
     lcd_display_dir(1);
     LCD_BL(1);
-    lcd_clear(RED);
+    lcd_clear(WHITE);
 }
 
 void HAL_SRAM_MspInit(SRAM_HandleTypeDef* hsram)

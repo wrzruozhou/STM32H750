@@ -1,77 +1,87 @@
 #include "main.h"
-
 static void MPU_Config(void);
 uint32_t sysclock = 0;
 uint8_t g_timeout;
+extern uint16_t g_color_map[ITERATION];
+extern uint16_t zoom_ratio[26];
 
+#if 0
 #if !(__ARMCC_VERSION >= 6010050)
 uint8_t mpudata[128] __attribute__((at(0X20002000)));
 #else
 uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
 #endif
+#endif
 
 int main(void)
 {
-  int i;
-  uint8_t t = 0;
+  uint8_t i;
+  uint8_t t = 0, key, autorun = 0;
+  char buf[50];
+  float time;
   /* Configure the MPU attributes */
-  MPU_Config();
+  //MPU_Config();
   sys_cache_enable();                  /* 打开L1-Cache */
-
   HAL_Init();
 
   sys_stm32_clock_init(240, 2, 2, 4);
   sysclock = HAL_RCC_GetSysClockFreq();
+	mpu_memory_protection();
   LED_Config();
   usart_init(115200);
   usmart_dev.init(240);
-
-  mpu_memory_protection();
   Key_Init();
-  mpu_memory_protection();
+  
   lcd_init();
-
-  // lcd_fill(100, 100, 300, 200, WHITE);
-  // lcd_draw_point(400, 400, WHITE);
-  // lcd_draw_line(0, 0, 250, 600, YELLOW);
-  // lcd_draw_hline(200, 700, 200, BLUE);
-  // lcd_draw_rectangle(250, 200, 450, 600, WHITE);
-  // lcd_draw_circle(300, 50, 30, BLUE);
-  // lcd_fill_circle(150, 200, 100, GREEN);
-  lcd_show_char(100, 200, '%', 32, 1, YELLOW);
-  lcd_show_num(100, 300, 550, 3, 32, GREEN);
-  lcd_show_xnum(100, 350, 100, 3, 24, 1, GREEN);
-  lcd_show_string(20, 600, 100, 100, 12, "xihaiqingge", GREEN);
+  btim_timx_int_init(65535, 24000 - 1);/*10Khz计数 6.5s超出*/
+  lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+  lcd_show_string(30, 70, 200, 16, 16, "FPU TEST", RED);
+  lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
+  lcd_show_string(30, 110, 200, 16, 16, "KEY0:+    KEY1:-", RED);
+  lcd_show_string(30, 130, 200, 16, 16, "KEY_UP:AUTO/MANUL", RED);
+  delay_ms(1200);
+  julia_clut_init(g_color_map);
   while (1)
   {
 
-    i = key_scan();
-    if (i == WKUP_PRES)
+    key = key_scan(0);
+    switch (key)
     {
-      mpu_set_protection(0X20002000, MPU_REGION_SIZE_128B,
-        MPU_REGION_NUMBER0, MPU_INSTRUCTION_ACCESS_ENABLE,
-        MPU_REGION_PRIV_RO_URO, MPU_ACCESS_NOT_SHAREABLE,
-        MPU_ACCESS_NOT_CACHEABLE,
-        MPU_ACCESS_BUFFERABLE); /* 只读,禁止共用,禁止 catch,允许缓冲 */
-      printf("MPU open!\r\n"); /* 提示 MPU 打开 */
+    case KEY0_PRES:
+      i++;
+      if (i > sizeof(zoom_ratio) / 2 - 1)
+        i = 0;
+      break;
+    case KEY1_PRES:
+      if (i)i--;
+      else i = sizeof(zoom_ratio) / 2 - 1;
+      break;
+    case WKUP_PRES:
+      autorun = !autorun;
+      break;
+    default:
+      break;
     }
-    else if (i == KEY0_PRES)
+    if (autorun == 1)
     {
-      printf("Start Writing data...\r\n");
-      sprintf((char*)mpudata, "MPU test array %d", t);
-      printf("Data Write finshed!\r\n");
+      i++;
+
+      if (i > sizeof(zoom_ratio) / 2 - 1)
+      {
+        i = 0;      /* 限制范围 */
+      }
     }
-    else if (i == KEY1_PRES)
-    {
-      printf("Array data is:%s\r\n", mpudata);
-    }
-    else
-    {
-      delay_ms(10);
-    }
-    t++;
-    if ((t % 50) == 0)
-      HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
+    lcd_set_window(0, 0, lcddev.width, lcddev.height);  /* 设置窗口 */
+    lcd_write_ram_prepare();
+
+    TIM6->CNT = 0;    /*重设置TIM6的计数值*/
+    g_timeout = 0;
+    julia_generate_fpu(lcddev.width, lcddev.height, lcddev.width / 2, lcddev.height / 2, zoom_ratio[i]);
+
+    time = TIM6->CNT + (uint32_t)g_timeout * 65536;
+    sprintf(buf, "%s: zoom:%d  runtime:%0.1fms\r\n", SCORE_FPU_MODE, zoom_ratio[i], time / 10);
+    lcd_show_string(5, lcddev.height - 5 - 12, lcddev.width - 5, 12, 12, buf, RED); /* 显示当前运行的情况 */
+    // printf("%s", buf); /* 打印到窗口 */
   }
 }
 

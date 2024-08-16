@@ -23,14 +23,15 @@
 #define KEY_KEY1_Read HAL_GPIO_ReadPin(KEY_1_Port,KEY_1_Pin)
 
 enum key_status {
-    WKUP_PRES = 0,
-    KEY0_PRES,
-    KEY1_PRES
+
+    KEY0_PRES = 1,
+    KEY1_PRES,
+    WKUP_PRES
 };
 
 void Key_Init(void);
 void Key_Init_IT(void);
-uint8_t key_scan(void);
+uint8_t key_scan(uint8_t mode);
 
 
 #endif // !__DRV_KEY_H

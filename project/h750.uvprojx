@@ -54,7 +54,7 @@
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>.\Listings\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -402,11 +402,6 @@
               <FileName>stm32h7xx_hal_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\apps\inc\stm32h7xx_hal_conf.h</FilePath>
-            </File>
-            <File>
-              <FileName>drv_btim3_1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\drv\src\drv_btim3_1.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,21 +1,12 @@
 #include "drv_julia.h"
 
-/*FPU模式提示*/
-#if __FPU_USED == 1
-#define SCORE_FPU_MODE  "FPU On"
-#else
-#define SCORE_FPU_MODE  "FPU Off"
-#endif
 
-#define ITERATION       128     /*迭代次数*/
-#define REAL_CONSTANT   0.285f  /*实部常量*/
-#define IMG_CONSTANT    0.01f   /*虚部常量*/
 
 /*颜色表*/
 uint16_t g_color_map[ITERATION];
 
 /*缩放因子列表*/
-const uint16_t zoom_ratio[] = {
+const uint16_t zoom_ratio[26] = {
     120, 110,100,150,200,275,350,450,
     600,800,1000,1200,1500,2000,1500,
     1200,1000,800,600,450,350,275,200,
