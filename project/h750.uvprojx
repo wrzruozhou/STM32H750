@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32H750xx,USE_HAL_DRIVER</Define>
+              <Define>STM32H750xx,USE_HAL_DRIVER,ARM_MATH_DSP,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING</Define>
               <Undefine></Undefine>
-              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\drv</IncludePath>
+              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\drv;..\drv\CMSIS\DSP\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -452,6 +452,11 @@
               <FileName>drv_btim3_1.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\drv\src\drv_btim3_1.c</FilePath>
+            </File>
+            <File>
+              <FileName>dsp_demo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\dsp_demo.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -590,6 +595,16 @@
               <FileName>stm32h7xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>DSP</GroupName>
+          <Files>
+            <File>
+              <FileName>arm_cortexM7lfdp_math.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>E:\32bitMCU\STM32H750\keil\drv\CMSIS\DSP\Lib\arm_cortexM7lfdp_math.lib</FilePath>
             </File>
           </Files>
         </Group>
