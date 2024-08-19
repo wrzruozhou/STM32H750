@@ -70,8 +70,8 @@ void lcd_display_off(void)
 /*读取某个点的颜色值*/
 uint32_t lcd_read_point(uint16_t x, uint16_t y)
 {
-    uint16_t r = 0, g = 0, b = 0;
-    if (x >= lcddev.width || y >= lcddev.height) return 0;
+	uint16_t r = 0, g = 0, b = 0;
+	if (x >= lcddev.width || y >= lcddev.height) return 0;
 }
 #endif
 
@@ -97,7 +97,43 @@ void lcd_scan_dir(uint8_t dir)
 	uint16_t regval = 0;
 	uint16_t dirreg = 0;
 	uint16_t temp;
+	if ((lcddev.dir == 1 && lcddev.id != 0X1963) || (lcddev.dir == 0 && lcddev.id == 0X1963))
+	{
+		switch (dir)   /* ·½Ïò×ª»» */
+		{
+		case 0:
+			dir = 6;
+			break;
 
+		case 1:
+			dir = 7;
+			break;
+
+		case 2:
+			dir = 4;
+			break;
+
+		case 3:
+			dir = 5;
+			break;
+
+		case 4:
+			dir = 1;
+			break;
+
+		case 5:
+			dir = 0;
+			break;
+
+		case 6:
+			dir = 3;
+			break;
+
+		case 7:
+			dir = 2;
+			break;
+		}
+	}
 	switch (dir)
 	{
 	case L2R_U2D:
@@ -172,23 +208,21 @@ void lcd_display_dir(uint8_t dir)
 	lcddev.dir = dir;
 	if (dir == 0)
 	{ /*竖屏*/
-		if (lcddev.id == 0x5510)
-		{
-			lcddev.wramcmd = 0x2c00;
-			lcddev.setxcmd = 0x2a00;
-			lcddev.setycmd = 0x2b00;
-			lcddev.width = 480;
-			lcddev.height = 800;
-		}
-		else
-		{
-			lcddev.wramcmd = 0x2c00;
-			lcddev.setxcmd = 0x2a00;
-			lcddev.setycmd = 0x2b00;
-			lcddev.width = 800;
-			lcddev.height = 480;
-		}
+		lcddev.wramcmd = 0x2c00;
+		lcddev.setxcmd = 0x2a00;
+		lcddev.setycmd = 0x2b00;
+		lcddev.width = 480;
+		lcddev.height = 800;
 	}
+	else
+	{
+		lcddev.wramcmd = 0x2c00;
+		lcddev.setxcmd = 0x2a00;
+		lcddev.setycmd = 0x2b00;
+		lcddev.width = 800;
+		lcddev.height = 480;
+	}
+
 	lcd_scan_dir(DFT_SCAN_DIR);
 }
 
@@ -336,12 +370,12 @@ void lcd_init(void)
 	Write_Timing.DataSetupTime = 2;
 	FMC_NORSRAM_Extended_Timing_Init(hsram_lcd.Extended, &Write_Timing, hsram_lcd.Init.NSBank, hsram_lcd.Init.ExtendedMode);
 
-	lcd_display_dir(0);
+	lcd_display_dir(1);
 	LCD_BL(1);
-	lcd_clear(RED);
+	lcd_clear(WHITE);
 }
 
-void HAL_SRAM_MspInit(SRAM_HandleTypeDef *hsram)
+void HAL_SRAM_MspInit(SRAM_HandleTypeDef* hsram)
 {
 	GPIO_InitTypeDef GPIO_Init;
 
@@ -568,23 +602,23 @@ void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode,
 	uint8_t temp, t1, t;
 	uint16_t y0 = y;
 	uint8_t csize = 0;
-	uint8_t *pfont = 0;
+	uint8_t* pfont = 0;
 	csize = (size / 8 + ((size % 8) ? 1 : 0)) * (size / 2);
 
 	chr = chr - ' '; /*得到偏移后值(ASCII字库是从空格开始取模的)*/
 	switch (size)
 	{
 	case 12:
-		pfont = (uint8_t *)asc2_1206[chr];
+		pfont = (uint8_t*)asc2_1206[chr];
 		break;
 	case 16:
-		pfont = (uint8_t *)asc2_1608[chr];
+		pfont = (uint8_t*)asc2_1608[chr];
 		break;
 	case 24:
-		pfont = (uint8_t *)asc2_2412[chr];
+		pfont = (uint8_t*)asc2_2412[chr];
 		break;
 	case 32:
-		pfont = (uint8_t *)asc2_3216[chr];
+		pfont = (uint8_t*)asc2_3216[chr];
 		break;
 	default:
 		return;
@@ -719,7 +753,7 @@ void lcd_show_xnum(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t si
  * @retval  无
  *
  */
-void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char *p, uint16_t color)
+void lcd_show_string(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint8_t size, char* p, uint16_t color)
 {
 	uint8_t x0 = x;
 	width += x;
