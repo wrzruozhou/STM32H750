@@ -55,6 +55,7 @@ int main(void)
     key = remote_scan();
     if (key)
     {
+      printf("%d\n", key);
       switch (key)
       {
       case 0:
@@ -141,7 +142,7 @@ int main(void)
         str = "DELETE";
         break;
       }/* ÏÔÊ¾SYMBOL */
-      printf("%s\n", str);
+      // printf("%s\n", str);
       lcd_fill(86, 150, 116 + 8 * 8, 170 + 16, WHITE);    /* Çå³þÖ®Ç°µÄÏÔÊ¾ */
       lcd_show_string(86, 150, 200, 16, 16, str, BLUE);   /* ÏÔÊ¾SYMBOL */
     }
