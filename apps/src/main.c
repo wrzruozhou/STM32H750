@@ -35,6 +35,7 @@ int main(void)
   // Key_Init();
   mpu_memory_protection();
   lcd_init();
+  remote_init();
 
   // lcd_fill(100, 100, 300, 200, WHITE);
   // lcd_draw_point(400, 400, WHITE);
@@ -43,10 +44,12 @@ int main(void)
   // lcd_draw_rectangle(250, 200, 450, 600, WHITE);
   // lcd_draw_circle(300, 50, 30, BLUE);
   // lcd_fill_circle(150, 200, 100, GREEN);
-  lcd_show_char(100, 200, '%', 32, 1, YELLOW);
-  lcd_show_num(100, 300, 550, 3, 32, GREEN);
-  lcd_show_xnum(100, 350, 100, 3, 24, 1, GREEN);
-  lcd_show_string(20, 600, 100, 100, 12, "xihaiqingge", GREEN);
+  lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+  lcd_show_string(30, 70, 200, 16, 16, "REMOTE TEST", RED);
+  lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
+  lcd_show_string(30, 110, 200, 16, 16, "KEYVAL:", RED);
+  lcd_show_string(30, 130, 200, 16, 16, "KEYCNT:", RED);
+  lcd_show_string(30, 150, 200, 16, 16, "SYMBOL:", RED);
   while (1)
   {
     key = remote_scan();
@@ -139,6 +142,8 @@ int main(void)
         break;
       }/* ÏÔÊ¾SYMBOL */
       printf("%s\n", str);
+      lcd_fill(86, 150, 116 + 8 * 8, 170 + 16, WHITE);    /* Çå³þÖ®Ç°µÄÏÔÊ¾ */
+      lcd_show_string(86, 150, 200, 16, 16, str, BLUE);   /* ÏÔÊ¾SYMBOL */
     }
 
     t++;
