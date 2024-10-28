@@ -2,10 +2,47 @@
 
 static void MPU_Config(void);
 uint32_t sysclock = 0;
+char READ_DA0[] = { 0x2, 0x30, 0x31, 0x30, 0x45, 0x43, 0x30, 0x32, 0x03, 0x3, 0x37, 0x45 };
+char READ_DA1[] = { 0x2, 0x30, 0x31, 0x30, 0x45, 0x45, 0x30, 0x32, 0x03, 0x3, 0x38, 0x45 };
+char WRITE_AD0[15] = { 0x2, 0x31, 0x31, 0x30, 0x45, 0x45, 0x30, 0x32, 0x0, 0x0, 0x0, 0x0, 0x3, 0, 0 };
+void (DEC_To_ASCII)(uint16_t value, char* buf)
+{
+  // buf[0] = ((value << 8) >> 12) & (0x0F) + 0x30;
+  // buf[1] = ((value << 8) >> 8) & (0x0f) + 0x30;
+
+  buf[0] = ((((value & (0x00f0)) << 8) >> 12) & 0xf);
+  buf[1] = ((((value & (0x000f)) << 8) >> 8) & 0xf);
+  buf[2] = (((value & (0xf000)) >> 12) & 0xf);
+  buf[3] = ((((value & (0x0f00)) << 4) >> 12) & 0xf);
+  for (size_t i = 0; i < 4; i++)
+  {
+    if (buf[i] >= 0x0a && buf[i] <= 0x0f)
+    {
+      buf[i] += 0x37;
+    }
+    else
+    {
+      buf[i] += 0x30;
+    }
+  }
+
+  // for (size_t i = 0; i < 4; i++)
+  // {
+  //   printf("%x ", buf[i]);
+  // }
+  // printf("\n");
+}
+
+
+int temp = 15;
+
 
 int main(void)
 {
+  uint16_t sum = 0;
   int i;
+  int temp2;
+  char temp_real[4];
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable();                  /* 打开L1-Cache */
@@ -16,9 +53,36 @@ int main(void)
   sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
   usart_init(115200);
+
+
+
   while (1)
   {
     HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+    DEC_To_ASCII(1111, temp_real);
+    WRITE_AD0[8] = temp_real[0];
+    WRITE_AD0[9] = temp_real[1];
+    WRITE_AD0[10] = temp_real[2];
+    WRITE_AD0[11] = temp_real[3];
+
+    for (size_t i = 1; i <= 12; i++)
+    {
+      sum += WRITE_AD0[i];
+    }
+    WRITE_AD0[13] = ((((sum & (0x00f0)) << 8) >> 12) & 0xf);
+    WRITE_AD0[14] = ((((sum & (0x000f)) << 8) >> 8) & 0xf);
+    if (WRITE_AD0[13] >= 0x0a && WRITE_AD0[13] <= 0x0f)
+      WRITE_AD0[13] += 0x37;
+    else
+      WRITE_AD0[13] += 0x30;
+
+    if (WRITE_AD0[14] >= 0x0a && WRITE_AD0[14] <= 0x0f)
+      WRITE_AD0[14] += 0x37;
+    else
+      WRITE_AD0[14] += 0x30;
+    sum = 0;
+    HAL_UART_Transmit(&g_uart1_handle, WRITE_AD0, sizeof(WRITE_AD0), 10);
+
     if (g_rx_flag == 1)
     {
       HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, g_usart_rx_sta, 10);
@@ -29,7 +93,7 @@ int main(void)
         g_rx_flag = 0;
       }
     }
-		HAL_Delay(1000);
+    HAL_Delay(5000);
   }
 }
 
