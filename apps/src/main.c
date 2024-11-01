@@ -1,5 +1,6 @@
 #include "main.h"
 
+
 static void MPU_Config(void);
 uint32_t sysclock = 0;
 char READ_DA0[] = { 0x2, 0x30, 0x31, 0x30, 0x45, 0x43, 0x30, 0x32, 0x03, 0x3, 0x37, 0x45 };
@@ -55,7 +56,6 @@ int main(void)
   usart_init(115200);
 
 
-
   while (1)
   {
     HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
@@ -81,7 +81,7 @@ int main(void)
     else
       WRITE_AD0[14] += 0x30;
     sum = 0;
-    HAL_UART_Transmit(&g_uart1_handle, WRITE_AD0, sizeof(WRITE_AD0), 10);
+    // HAL_UART_Transmit(&g_uart1_handle, WRITE_AD0, sizeof(WRITE_AD0), 10);
 
     if (g_rx_flag == 1)
     {
@@ -93,7 +93,9 @@ int main(void)
         g_rx_flag = 0;
       }
     }
-    HAL_Delay(5000);
+
+
+    HAL_Delay(100);
   }
 }
 

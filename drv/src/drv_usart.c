@@ -41,7 +41,8 @@ char* _sys_command_string(char* cmd, int len)
 FILE __stdout;
 /* ************************************************************************************************************************************ */
 
-
+uint8_t Ack_flag = 0;
+uint8_t idle_flag = 0;
 UART_HandleTypeDef g_uart1_handle;    /* UART¾ä±ú */
 /* 最大缓冲区,接收SART_REC_LEN个字节 */
 uint8_t g_usart_rx_buf[USART_REC_LEN];
@@ -66,7 +67,9 @@ void usart_init(uint32_t baudrate)
     g_uart1_handle.Init.Mode = UART_MODE_TX_RX; /* 收发模式 */
     HAL_UART_Init(&g_uart1_handle); /* HAL_UART_Init()会使能 UART1 */
     /*该函数会开启接收中断：标志位 UART_IT_RXNE，并且设置接收缓冲以及接收缓冲接收最大数据量*/
-    HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE);
+    // HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE);
+
+    HAL_UARTEx_ReceiveToIdle_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, 200);
 }
 
 /**
@@ -103,11 +106,12 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 void USART1_IRQHandler(void)
 {
     HAL_UART_IRQHandler(&g_uart1_handle);
-    HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE);
+    HAL_UARTEx_ReceiveToIdle_IT(&g_uart1_handle, (uint8_t*)g_usart_rx_buf, 200);
 }
 /* 可以定制化你所最爱的中断回调函数了 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
 {
+#if 1
     if (huart->Instance == USART1)
     {
         g_usart_rx_buf[g_usart_rx_sta] = g_rx_buffer[0];
@@ -117,6 +121,52 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
             g_rx_flag = 1;
         }
     }
+#else
+
+
+#endif
+    HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE);
+}
+
+/**
+  * @brief  Reception Event Callback (Rx event notification called after use of advanced reception service).
+  * @param  huart UART handle
+  * @param  Size  Number of data available in application reception buffer (indicates a position in
+  *               reception buffer until which, data are available)
+  * @retval None
+  */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
+{
+    char ch[1] = { 0x06 };
+    char ch2[8] = { 0x02 ,0x46 ,0x46, 0x30, 0x46, 0x03 ,0x30, 0x35 };
+    /* Prevent unused argument(s) compilation warning */
+    // UNUSED(huart);
+    // UNUSED(Size);
+
+    /* NOTE : This function should not be modified, when the callback is needed,
+              the HAL_UARTEx_RxEventCallback can be implemented in the user file.
+     */
+    idle_flag = 1;
+    if (strstr((char*)g_usart_rx_buf, ch))
+    {
+        HAL_UART_Transmit(&g_uart1_handle, (uint8_t*)"receive Ack", sizeof("receive Ack"), 0xff);
+        memset(g_usart_rx_buf, 0, 200);
+    }
+    // if (strstr((char*)g_usart_rx_buf, ch2))
+    // {
+    //     HAL_UART_Transmit(&g_uart1_handle, (uint8_t*)"it will change the dac value", sizeof("it will change the dac value"), 0xff);
+    //     memset(g_usart_rx_buf, 0, 200);
+    // }
+    if ((g_usart_rx_buf[0] == 0x02) && (g_usart_rx_buf[5] == 0x03))
+    {
+        HAL_UART_Transmit(&g_uart1_handle, (uint8_t*)"it will change the dac value", sizeof("it will change the dac value"), 0xff);
+    }
+
+
+    HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, 200, 0xffff);
+    memset(g_usart_rx_buf, 0, 200);
+
+
 }
 
 
@@ -138,3 +188,4 @@ int fputc(int ch, FILE* f)
     return ch;
 }
 #endif
+

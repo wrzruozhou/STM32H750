@@ -3,10 +3,13 @@
 
 #include "stm32h7xx_hal.h"
 #include "stdio.h"
+#include "string.h"
 
 #define USART_REC_LEN 200 /* 定义最大接收字节数 200 */
 #define USART_EN_RX 1 /* 使能（1） /禁止（0）串口 1 接收 */
 #define RXBUFFERSIZE 1 /* 缓存大小 */
+
+extern uint8_t idle_flag;
 
 extern UART_HandleTypeDef g_uart1_handle;
 extern uint8_t g_rx_flag;
