@@ -46,6 +46,8 @@ uint8_t idle_flag = 0;
 UART_HandleTypeDef g_uart1_handle;    /* UART¾ä±ú */
 /* 最大缓冲区,接收SART_REC_LEN个字节 */
 uint8_t g_usart_rx_buf[USART_REC_LEN];
+/*接收的DAC数据*/
+uint16_t recv_dac1_data = 0;
 
 /*  接受状态
  *  bit15，     接收完成标志
@@ -159,11 +161,23 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
     // }
     if ((g_usart_rx_buf[0] == 0x02) && (g_usart_rx_buf[5] == 0x03))
     {
-        HAL_UART_Transmit(&g_uart1_handle, (uint8_t*)"it will change the dac value", sizeof("it will change the dac value"), 0xff);
+        /*解析数据*/
+        for (size_t i = 1; i < 5; i++)
+        {
+            if (g_usart_rx_buf[i] >= 'A')
+            {
+                g_usart_rx_buf[i] -= 0x37;
+            }
+            else
+            {
+                g_usart_rx_buf[i] -= 0x30;
+            }
+        }
+        recv_dac1_data = (g_usart_rx_buf[3] << 12) | (g_usart_rx_buf[4] << 8) | (g_usart_rx_buf[1] << 4) | g_usart_rx_buf[2];
     }
 
 
-    HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, 200, 0xffff);
+    // HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, 200, 0xffff);
     memset(g_usart_rx_buf, 0, 200);
 
 

@@ -1,3 +1,5 @@
+/*this Project was changed from usart*/
+
 #include "main.h"
 
 
@@ -44,6 +46,7 @@ int main(void)
   int i;
   int temp2;
   char temp_real[4];
+  float volate;
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable();                  /* 打开L1-Cache */
@@ -54,6 +57,10 @@ int main(void)
   sysclock = HAL_RCC_GetSysClockFreq();
   LED_Config();
   usart_init(115200);
+
+  dac_init();
+  dac_channel_set(DAC1_CHANNEL_1, 0);
+  dac_channel_set(DAC1_CHANNEL_2, 0);
 
 
   while (1)
@@ -82,6 +89,15 @@ int main(void)
       WRITE_AD0[14] += 0x30;
     sum = 0;
     // HAL_UART_Transmit(&g_uart1_handle, WRITE_AD0, sizeof(WRITE_AD0), 10);
+    if (idle_flag == 1)
+    {
+      idle_flag = 0;
+      volate = (float)recv_dac1_data / 4095 * 3.3;
+      dac_channel_set(DAC1_CHANNEL_1, recv_dac1_data);
+      dac_channel_set(DAC1_CHANNEL_2, recv_dac1_data);
+      printf("理论电压为:%f", volate);
+    }
+
 
     if (g_rx_flag == 1)
     {

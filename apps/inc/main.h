@@ -10,6 +10,7 @@
 #include "drv_led.h"
 #include "drv_rcc.h"
 #include "drv_usart.h"
+#include "drv_dac.h"
 
 #endif /* __MAIN_H */
 

@@ -16,6 +16,7 @@ extern uint8_t g_rx_flag;
 extern uint16_t g_usart_rx_sta;
 extern UART_HandleTypeDef g_uart1_handle;
 extern uint8_t g_usart_rx_buf[USART_REC_LEN];
+extern uint16_t recv_dac1_data;
 
 /* 串口 1 的 GPIO */
 #define USART_TX_GPIO_PORT GPIOA
