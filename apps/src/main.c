@@ -42,6 +42,7 @@ int temp = 15;
 
 int main(void)
 {
+  uint32_t adc_temp;
   uint16_t sum = 0;
   int i;
   int temp2;
@@ -58,13 +59,18 @@ int main(void)
   LED_Config();
   usart_init(115200);
 
-  dac_init();
-  dac_channel_set(DAC1_CHANNEL_1, 0);
-  dac_channel_set(DAC1_CHANNEL_2, 0);
+  // dac_init();
+  // dac_channel_set(DAC1_CHANNEL_1, 0);
+  // dac_channel_set(DAC1_CHANNEL_2, 0);
+
+  adc_init();
 
 
   while (1)
   {
+    adc_temp = adc_get_result_average(ADC_CHANNEL_19, 10);
+    printf("the single value is %d\n", adc_temp);
+
     HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
     DEC_To_ASCII(1111, temp_real);
     WRITE_AD0[8] = temp_real[0];
@@ -111,7 +117,7 @@ int main(void)
     }
 
 
-    HAL_Delay(100);
+    HAL_Delay(1000);
   }
 }
 

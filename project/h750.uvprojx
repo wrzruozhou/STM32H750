@@ -433,6 +433,11 @@
               <FileType>1</FileType>
               <FilePath>..\drv\src\drv_dac.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\src\drv_adc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

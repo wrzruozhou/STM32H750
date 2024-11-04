@@ -11,6 +11,7 @@
 #include "drv_rcc.h"
 #include "drv_usart.h"
 #include "drv_dac.h"
+#include "drv_adc.h"
 
 #endif /* __MAIN_H */
 
