@@ -2,6 +2,9 @@
 
 #include "main.h"
 
+/*创建存储ADC数据的变量*/
+#define ADC_DMA_BUF_SIZE  50 * 6
+uint16_t g_adc_dma_buf[ADC_DMA_BUF_SIZE];
 
 static void MPU_Config(void);
 uint32_t sysclock = 0;
@@ -42,9 +45,9 @@ int temp = 15;
 
 int main(void)
 {
-  uint32_t adc_temp;
+  uint32_t adc_temp = 0;
   uint16_t sum = 0;
-  int i;
+  int i, j;
   int temp2;
   char temp_real[4];
   float volate;
@@ -63,21 +66,44 @@ int main(void)
   // dac_channel_set(DAC1_CHANNEL_1, 0);
   // dac_channel_set(DAC1_CHANNEL_2, 0);
 
-  adc_init();
-
+  adc_init_dma((uint32_t)&ADC1->DR, (uint32_t)g_adc_dma_buf);
+  /*启动ADC的DMA传输*/
+  adc_dma_enable(ADC_DMA_BUF_SIZE);
 
   while (1)
   {
-    adc_temp = adc_get_result_average(ADC_CHANNEL_19, 10);
-    printf("the single value is %d\n", adc_temp);
+    /*循环显示ADC转化后的数据结果*/
+    if (g_adc_dma_flag)
+    {
+      SCB_InvalidateDCache();                                             /*清除D-Cache数据*/
+      for (i = 0; i < 6; i++)
+      {
+        for (j = 0; j < ADC_DMA_BUF_SIZE / 6; j++)
+        {
+          adc_temp += g_adc_dma_buf[6 * j + i];
+        }
+        adc_temp /= 50;
+        printf("the channel %d is %d\n", i, adc_temp);
+        adc_temp = 0;                                                         /*清0中间变量*/
+      }
+      g_adc_dma_flag = 0;
+      adc_dma_enable(ADC_DMA_BUF_SIZE);
+    }
 
-    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+    /*单次ADC数据转化测试*/
+    // adc_temp = adc_get_result_average(ADC_CHANNEL_19, 10);
+    // printf("the single value is %d\n", adc_temp);
+
+
+
+    /*接收数据处理*/
     DEC_To_ASCII(1111, temp_real);
     WRITE_AD0[8] = temp_real[0];
     WRITE_AD0[9] = temp_real[1];
     WRITE_AD0[10] = temp_real[2];
     WRITE_AD0[11] = temp_real[3];
 
+    /*校验码尾数获取*/
     for (size_t i = 1; i <= 12; i++)
     {
       sum += WRITE_AD0[i];
@@ -93,18 +119,22 @@ int main(void)
       WRITE_AD0[14] += 0x37;
     else
       WRITE_AD0[14] += 0x30;
+    /*这里要进行校验码和接收到的数据进行判断处理*/
     sum = 0;
+    /**/
     // HAL_UART_Transmit(&g_uart1_handle, WRITE_AD0, sizeof(WRITE_AD0), 10);
+
+    /*串口空闲中断控制DAC电压*/
     if (idle_flag == 1)
     {
       idle_flag = 0;
       volate = (float)recv_dac1_data / 4095 * 3.3;
       dac_channel_set(DAC1_CHANNEL_1, recv_dac1_data);
       dac_channel_set(DAC1_CHANNEL_2, recv_dac1_data);
-      printf("理论电压为:%f", volate);
+      printf("理论电压为:%f\n", volate);
     }
 
-
+    /*串口接收中断*/
     if (g_rx_flag == 1)
     {
       HAL_UART_Transmit(&g_uart1_handle, g_usart_rx_buf, g_usart_rx_sta, 10);
@@ -116,8 +146,8 @@ int main(void)
       }
     }
 
-
-    HAL_Delay(1000);
+    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+    HAL_Delay(5000);
   }
 }
 
