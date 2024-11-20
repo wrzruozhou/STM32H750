@@ -10,6 +10,7 @@
 #define RXBUFFERSIZE 1 /* 缓存大小 */
 
 extern uint8_t idle_flag;
+extern uint8_t Ack_flag;
 
 extern UART_HandleTypeDef g_uart1_handle;
 extern uint8_t g_rx_flag;

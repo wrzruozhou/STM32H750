@@ -83,6 +83,9 @@ int main(void)
           adc_temp += g_adc_dma_buf[6 * j + i];
         }
         adc_temp /= 50;
+        /*下面就是数据处理*/
+
+
         printf("the channel %d is %d\n", i, adc_temp);
         adc_temp = 0;                                                         /*清0中间变量*/
       }

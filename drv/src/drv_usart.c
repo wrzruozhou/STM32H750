@@ -43,6 +43,7 @@ FILE __stdout;
 
 uint8_t Ack_flag = 0;
 uint8_t idle_flag = 0;
+uint8_t Ack_flag = 0;
 UART_HandleTypeDef g_uart1_handle;    /* UART¾ä±ú */
 /* 最大缓冲区,接收SART_REC_LEN个字节 */
 uint8_t g_usart_rx_buf[USART_REC_LEN];
@@ -151,7 +152,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
     idle_flag = 1;
     if (strstr((char*)g_usart_rx_buf, ch))
     {
-        HAL_UART_Transmit(&g_uart1_handle, (uint8_t*)"receive Ack", sizeof("receive Ack"), 0xff);
+        Ack_flag = 1;
+        // HAL_UART_Transmit(&g_uart1_handle, (uint8_t*)"receive Ack", sizeof("receive Ack"), 0xff);
         memset(g_usart_rx_buf, 0, 200);
     }
     // if (strstr((char*)g_usart_rx_buf, ch2))

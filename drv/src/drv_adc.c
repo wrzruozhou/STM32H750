@@ -81,7 +81,7 @@ void adc_init_dma(uint32_t par, uint32_t mar)
 
     adc_handle.Instance = ADC1;                                                                         /*选择哪一个ADC*/
     adc_handle.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;                                              /*输入时钟2分频,adc_ker_ck=per_ck/2=32Mhz*/
-    adc_handle.Init.Resolution = ADC_RESOLUTION_16B;                                                    /*16位模式*/
+    adc_handle.Init.Resolution = ADC_RESOLUTION_12B;                                                    /*16位模式*/
     adc_handle.Init.ScanConvMode = ADC_SCAN_ENABLE;                                                    /*扫描模式*/
     adc_handle.Init.EOCSelection = ADC_EOC_SINGLE_CONV;                                                 /*关闭EOC中断*/
     adc_handle.Init.LowPowerAutoWait = DISABLE;                                                         /*自动低功耗模式关闭*/
