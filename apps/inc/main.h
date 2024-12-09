@@ -22,5 +22,10 @@
 #include "drv_touch.h"
 #include "drv_malloc.h"
 
+#include "usbd_core.h"
+#include "usbd_desc.h"
+#include "usbd_cdc.h"
+#include "usbd_cdc_interface.h"
+
 #endif /* __MAIN_H */
 

@@ -16,8 +16,8 @@
         <TargetCommonOption>
           <Device>STM32H750VBTx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32H7xx_DFP.2.7.0</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
+          <PackID>Keil.STM32H7xx_DFP.4.0.0</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x24000000,0x00080000) IROM(0x08000000,0x00020000) XRAM(0x30000000,0x00048000) XRAM2(0x38000000,0x00010000) CPUTYPE("Cortex-M7") FPU3(DFPU) CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>STM32H750xx,USE_HAL_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\drv</IncludePath>
+              <IncludePath>..\apps\inc;..\drv\inc;..\lib\STM32H7xx_HAL_Driver\Inc;..\lib\CMSIS\Include;..\lib\CMSIS\Device\ST\STM32H7xx\Include;..\drv;..\drv\USB_CDC\CLASS\CDC\Inc;..\drv\USB_CDC\CORE\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -402,6 +402,21 @@
               <FileName>stm32h7xx_hal_conf.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\apps\inc\stm32h7xx_hal_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_cdc_interface.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\apps\src\usbd_cdc_interface.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_conf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\apps\src\usbd_conf.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\apps\src\usbd_desc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -615,6 +630,36 @@
               <FileName>stm32h7xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim_ex.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB_CDC_CORE</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USB_CDC\CORE\Src\usbd_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_ctlreq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USB_CDC\CORE\Src\usbd_ctlreq.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_ioreq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USB_CDC\CORE\Src\usbd_ioreq.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USB_CDC_CLASS</GroupName>
+          <Files>
+            <File>
+              <FileName>usbd_cdc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drv\USB_CDC\CLASS\CDC\Src\usbd_cdc.c</FilePath>
             </File>
           </Files>
         </Group>
