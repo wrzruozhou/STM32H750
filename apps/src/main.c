@@ -3,10 +3,12 @@
 static void MPU_Config(void);
 uint32_t sysclock = 0;
 
+#if 0
 #if !(__ARMCC_VERSION >= 6010050)
 uint8_t mpudata[128] __attribute__((at(0X20002000)));
 #else
 uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
+#endif
 #endif
 
 /*这里是测试FLASH的*/
@@ -21,6 +23,8 @@ int main(void)
   uint8_t t = 0;
   char* str = 0;
   uint8_t key = 0;
+  uint64_t card_capacity;             /* SD卡容量 */
+
   uint32_t flashsize;
   uint8_t datatemp[TEXT_SIZE];
   /* Configure the MPU attributes */
@@ -35,21 +39,47 @@ int main(void)
   LED_Config();
   usart_init(115200);
   usmart_dev.init(240);
+
+  my_mem_init(SRAMIN);
+  my_mem_init(SRAM12);
+  my_mem_init(SRAM4);
+  my_mem_init(SRAMDTCM);
+  my_mem_init(SRAMITCM);
+
   at24cxx_init();
   lcd_init();
+  /* 打印SD卡相关信息 */
+  show_sdcard_info();
 
 
-  id = norflash_ex_read_id();
-  printf("the flash id is %x\n", id);
-  flashsize = 16 * 1024 * 1024;
-  sprintf((char*)datatemp, "%s%d", (char*)g_text_buf, i);
-  norflash_ex_write((uint8_t*)datatemp, flashsize - 100, TEXT_SIZE);
+
+  lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+  lcd_show_string(30, 70, 200, 16, 16, "SD  TEST", RED);
+  lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
+  lcd_show_string(30, 110, 200, 16, 16, "KEY0:Read Sector 0", RED);
+
+  while (sd_init())
+  {
+    lcd_show_string(30, 150, 200, 16, 16, "SD Card Error!", RED);
+    delay_ms(500);
+    lcd_show_string(30, 150, 200, 16, 16, "Please Check! ", RED);
+    delay_ms(500);
+    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
+  }
+  /* 打印SD卡相关信息 */
+  show_sdcard_info();
+
+  /* 检测SD卡成功 */
+  lcd_show_string(30, 150, 200, 16, 16, "SD Card OK    ", BLUE);
+  lcd_show_string(30, 170, 200, 16, 16, "SD Card Size:     MB", BLUE);
+  card_capacity = (uint64_t)(g_sd_card_info_handle.LogBlockNbr) * (uint64_t)(g_sd_card_info_handle.LogBlockSize); /* 计算SD卡容量 */
+  lcd_show_num(30 + 13 * 8, 170, card_capacity >> 20, 5, 16, BLUE);
+
   while (1)
   {
-
-    delay_ms(1000);
-    norflash_ex_read(datatemp, flashsize - 100, TEXT_SIZE);
-    printf("%s\n", datatemp);
+    HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
+    sd_test_read(0, 1);
+    delay_ms(2000);
   }
 }
 
