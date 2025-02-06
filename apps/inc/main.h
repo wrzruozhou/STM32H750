@@ -23,5 +23,9 @@
 #include "drv_norflash_ex.h"
 #include "drv_sdmmc.h"
 
+#include <ff.h>
+#include "exfuns.h"
+#include <fattester.h>
+
 #endif /* __MAIN_H */
 

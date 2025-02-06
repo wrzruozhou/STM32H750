@@ -21,12 +21,9 @@ int main(void)
 {
   int i;
   uint8_t t = 0;
-  char* str = 0;
   uint8_t key = 0;
-  uint64_t card_capacity;             /* SD卡容量 */
-
-  uint32_t flashsize;
-  uint8_t datatemp[TEXT_SIZE];
+  uint8_t res = 0;
+  uint32_t total, free;
   /* Configure the MPU attributes */
   MPU_Config();
   sys_cache_enable(); /* 打开L1-Cache */
@@ -52,11 +49,10 @@ int main(void)
   show_sdcard_info();
 
 
-
   lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
-  lcd_show_string(30, 70, 200, 16, 16, "SD  TEST", RED);
+  lcd_show_string(30, 70, 200, 16, 16, "FATFS TEST", RED);
   lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
-  lcd_show_string(30, 110, 200, 16, 16, "KEY0:Read Sector 0", RED);
+  lcd_show_string(30, 110, 200, 16, 16, "Use USMART for test", RED);
 
   while (sd_init())
   {
@@ -66,19 +62,25 @@ int main(void)
     delay_ms(500);
     HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
   }
-  /* 打印SD卡相关信息 */
-  show_sdcard_info();
-
-  /* 检测SD卡成功 */
-  lcd_show_string(30, 150, 200, 16, 16, "SD Card OK    ", BLUE);
-  lcd_show_string(30, 170, 200, 16, 16, "SD Card Size:     MB", BLUE);
-  card_capacity = (uint64_t)(g_sd_card_info_handle.LogBlockNbr) * (uint64_t)(g_sd_card_info_handle.LogBlockSize); /* 计算SD卡容量 */
-  lcd_show_num(30 + 13 * 8, 170, card_capacity >> 20, 5, 16, BLUE);
-
+  exfuns_init();        /*为fatfs相关变量申请内存*/
+  res = f_mount(fs[0], "0", 1);     /*挂载SD卡*/
+  lcd_fill(30, 150, 240, 150 + 16, WHITE);        /* 清除显示 */
+  while (exfuns_get_free("0", &total, &free))     /* 得到SD卡的总容量和剩余容量 */
+  {
+    lcd_show_string(30, 150, 200, 16, 16, "SD Card Fatfs Error!", RED);
+    delay_ms(200);
+    lcd_fill(30, 150, 240, 150 + 16, WHITE);    /* 清除显示 */
+    delay_ms(200);
+    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);                            /* LED0闪烁 */
+  }
+  lcd_show_string(30, 150, 200, 16, 16, "FATFS OK!", BLUE);
+  lcd_show_string(30, 170, 200, 16, 16, "SD Total Size:     MB", BLUE);
+  lcd_show_string(30, 190, 200, 16, 16, "SD Free Size:     MB", BLUE);
+  lcd_show_num(30 + 8 * 14, 170, total >> 10, 5, 16, BLUE);   /* 显示SD卡总容量 MB */
+  lcd_show_num(30 + 8 * 14, 190, free >> 10, 5, 16, BLUE);    /* 显示SD卡剩余容量 MB */
   while (1)
   {
     HAL_GPIO_TogglePin(LED1_GPIO_PORT, LED1_GPIO_PIN);
-    sd_test_read(0, 1);
     delay_ms(2000);
   }
 }

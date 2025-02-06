@@ -96,7 +96,6 @@ void lcd_scan_dir(uint8_t dir)
 {
 	uint16_t regval = 0;
 	uint16_t dirreg = 0;
-	uint16_t temp;
 
 	switch (dir)
 	{
