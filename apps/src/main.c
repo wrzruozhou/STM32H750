@@ -48,6 +48,7 @@ int main(void)
 
   at24cxx_init();
   lcd_init();
+  /*测试用，先不初始化SD卡看看会输出什么东西*/
   /* 打印SD卡相关信息 */
   show_sdcard_info();
 
