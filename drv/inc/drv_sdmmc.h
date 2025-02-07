@@ -27,7 +27,7 @@
 
 #define SD1_CMD_GPIO_PORT            GPIOD
 #define SD1_CMD_GPIO_PIN             GPIO_PIN_2
-#define SD1_CMD_GPIO_CLK_ENABLE()    do{__HAL_RCC_GPIOC_CLK_ENABLE();}while(0)
+#define SD1_CMD_GPIO_CLK_ENABLE()    do{__HAL_RCC_GPIOD_CLK_ENABLE();}while(0)
 
 /****************************************************************************** */
 #define SD_TIMEOUT          ((uint32_t)100000000)   /*起始时间*/
@@ -38,7 +38,7 @@ extern SD_HandleTypeDef g_sd_handle;                    /* SD卡句柄 */
 extern HAL_SD_CardInfoTypeDef g_sd_card_info_handle;    /* SD卡信息结构体 */
 
 /*函数声明*/
-uint8_t sd_init();
+uint8_t sd_init(void);
 uint8_t get_sd_card_info(HAL_SD_CardInfoTypeDef* cardinfo);
 uint8_t get_sd_card_state(void);
 uint8_t sd_read_disk(uint8_t* buf, uint32_t sector, uint32_t cnt);

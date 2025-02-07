@@ -62,7 +62,7 @@ void HAL_SD_MspInit(SD_HandleTypeDef* hsd)
     gpio_init_struct.Pin = SD1_D2_GPIO_PIN;
     HAL_GPIO_Init(SD1_D2_GPIO_PORT, &gpio_init_struct);
 
-    gpio_init_struct.Pin - SD1_D3_GPIO_PIN;
+    gpio_init_struct.Pin = SD1_D3_GPIO_PIN;
     HAL_GPIO_Init(SD1_D3_GPIO_PORT, &gpio_init_struct);
 
     gpio_init_struct.Pin = SD1_CLK_GPIO_PIN;

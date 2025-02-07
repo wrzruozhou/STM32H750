@@ -3,7 +3,7 @@
 static void MPU_Config(void);
 uint32_t sysclock = 0;
 
-#if 0
+#if 0                                                 /*注释这个地方是因为其他地方使用到了这个为止*/
 #if !(__ARMCC_VERSION >= 6010050)
 uint8_t mpudata[128] __attribute__((at(0X20002000)));
 #else
@@ -45,9 +45,6 @@ int main(void)
 
   at24cxx_init();
   lcd_init();
-  /* 打印SD卡相关信息 */
-  show_sdcard_info();
-
 
   lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
   lcd_show_string(30, 70, 200, 16, 16, "FATFS TEST", RED);
@@ -62,16 +59,19 @@ int main(void)
     delay_ms(500);
     HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);
   }
+  /* 打印SD卡相关信息 */
+  show_sdcard_info();
   exfuns_init();        /*为fatfs相关变量申请内存*/
-  res = f_mount(fs[0], "0", 1);     /*挂载SD卡*/
+  f_mount(fs[0], "0:", 1);     /*挂载SD卡*/
   lcd_fill(30, 150, 240, 150 + 16, WHITE);        /* 清除显示 */
+
   while (exfuns_get_free("0", &total, &free))     /* 得到SD卡的总容量和剩余容量 */
   {
     lcd_show_string(30, 150, 200, 16, 16, "SD Card Fatfs Error!", RED);
     delay_ms(200);
     lcd_fill(30, 150, 240, 150 + 16, WHITE);    /* 清除显示 */
     delay_ms(200);
-    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);                            /* LED0闪烁 */
+    HAL_GPIO_TogglePin(LED0_GPIO_PORT, LED0_GPIO_PIN);                                /* LED0闪烁 */
   }
   lcd_show_string(30, 150, 200, 16, 16, "FATFS OK!", BLUE);
   lcd_show_string(30, 170, 200, 16, 16, "SD Total Size:     MB", BLUE);
