@@ -93,7 +93,7 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
  * @param   dmcycle:空指令周期数
  * @retval  无
 */
-void qspi_send_cmd(uint8_t cmd, uint16_t addr, uint8_t mode, uint8_t dmcycle)
+void qspi_send_cmd(uint8_t cmd, uint32_t addr, uint8_t mode, uint8_t dmcycle)
 {
     QSPI_CommandTypeDef hcmd;
     hcmd.Instruction = cmd;
@@ -180,3 +180,4 @@ uint8_t qspi_transmit(uint8_t* buf, uint32_t datalen)
         return 1;
     }
 }
+

@@ -10,7 +10,7 @@ uint8_t mpudata[128] __attribute__((section(".bss.ARM.__at_0X20002000")));
 #endif
 
 /*这里是测试FLASH的*/
-const uint8_t g_text_buf[] = { "zhong yu zuo le zhe ge jue ding" };
+const uint8_t g_text_buf[] = { "zhua bu zhu ni xu xia de nuo yan wo zai ku ku deng dai xue shan zhi dian wen nuan de" };
 #define TEXT_SIZE sizeof(g_text_buf)
 
 char temp_read[128];
@@ -47,7 +47,7 @@ int main(void)
   while (1)
   {
 
-    delay_ms(1000);
+    delay_ms(5000);
     norflash_ex_read(datatemp, flashsize - 100, TEXT_SIZE);
     printf("%s\n", datatemp);
   }
